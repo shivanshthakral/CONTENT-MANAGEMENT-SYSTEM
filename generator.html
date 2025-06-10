@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Generator - Espire Infolabs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #2d3748;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            color: #4299e1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #EEF2FF;
+            border-radius: 16px;
+        }
+
+        .header h1 {
+            color: #4169E1;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #4A5568;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .drop-zone {
+            border: 2px dashed #4299e1;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone:hover {
+            border-color: #3182ce;
+            background: #f7fafc;
+        }
+
+        .drop-zone--over {
+            border-style: solid;
+            background: #ebf8ff;
+        }
+
+        .drop-zone i {
+            font-size: 2.5rem;
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        .drop-zone p {
+            color: #4a5568;
+            margin: 0.5rem 0;
+        }
+
+        .selected-file {
+            margin-top: 1rem;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .choose-file-btn {
+            background: #4299e1;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .choose-file-btn:hover {
+            background: #3182ce;
+        }
+
+        .template-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .template-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .template-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-option:hover {
+            border-color: #4299e1;
+            background: #f7fafc;
+        }
+
+        .template-option input[type="radio"] {
+            margin-top: 0.25rem;
+            margin-right: 1rem;
+        }
+
+        .template-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+            min-width: 120px;
+        }
+
+        .template-description {
+            color: #4a5568;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .generate-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .generate-btn:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(49, 130, 206, 0.1);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn i {
+            font-size: 1.2rem;
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            position: relative;
+            opacity: 0.8;
+            cursor: wait;
+        }
+
+        .loading:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-header i {
+            color: #4169E1;
+            font-size: 1.25rem;
+        }
+
+        .section-header h4 {
+            color: #2d3748;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .field-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .json-field {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .json-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .content-text {
+            color: #4a5568;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin-top: 0.5rem;
+        }
+
+        .takeaways-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .takeaways-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .takeaways-list li:before {
+            content: "•";
+            color: #4299e1;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .json-field:hover {
+            border-color: #4169E1;
+            box-shadow: 0 2px 4px rgba(65, 105, 225, 0.1);
+        }
+
+        .json-key {
+            color: #4169E1;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .json-value {
+            color: #2d3748;
+            font-size: 1rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .json-string { color: #2f855a; }
+        .json-number { color: #805ad5; }
+        .json-boolean { color: #d69e2e; }
+
+        #result {
+            margin-top: 3rem;
+        }
+
+        #result h3 {
+            color: #4169E1;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        #result h3 i {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="/" class="logo">Espire Infolabs</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/context">Company Context</a>
+            </div>
+        </nav>
+
+        <div class="header">
+            <h1>Content Generator using Document AI</h1>
+            <p>Transform your PDFs into well-structured, customized content<br>with our intelligent template-based generator</p>
+        </div>
+
+        <div class="main-content">
+            <!-- File Upload Section -->
+            <div class="drop-zone" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag & Drop your PDF here</p>
+                <p>or</p>
+                <button class="choose-file-btn">Choose File</button>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                <p class="selected-file"></p>
+            </div>
+
+            <!-- Template Selection Section -->
+            <div class="template-section">
+                <h3>Select Template</h3>
+                <div class="template-options">
+                    <label class="template-option">
+                        <input type="radio" name="template" value="1" checked>
+                        <span class="template-name">BLOCK</span>
+                        <span class="template-description">Generate comprehensive block content with metadata, images, and blog details</span>
+                    </label>
+                    <label class="template-option">
+                        <input type="radio" name="template" value="2">
+                        <span class="template-name">SUMMARY</span>
+                        <span class="template-description">Create Digital Experience Platform service content with branding elements</span>
+                    </label>
+                </div>
+
+                <!-- Generate Button -->
+                <button id="generateBtn" class="generate-btn" disabled>
+                    <i class="fas fa-magic"></i>
+                    Generate Content
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.querySelector('.drop-zone');
+            const fileInput = document.querySelector('#fileInput');
+            const generateBtn = document.querySelector('#generateBtn');
+            const templateOptions = document.querySelectorAll('input[name="template"]');
+            let selectedFile = null;
+
+            // File selection handling
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFileSelection(file);
+                }
+            });
+
+            // Enable "Choose File" button
+            document.querySelector('.choose-file-btn').addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            function handleFileSelection(file) {
+                if (file.type === 'application/pdf') {
+                    selectedFile = file;
+                    document.querySelector('.selected-file').textContent = `Selected file: ${file.name}`;
+                    generateBtn.disabled = false;
+                } else {
+                    alert('Please upload a PDF file');
+                    generateBtn.disabled = true;
+                }
+            }
+
+            // Generate button click handler
+            generateBtn.addEventListener('click', async () => {
+                if (!selectedFile) {
+                    alert('Please select a PDF file first');
+                    return;
+                }
+
+                const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
+                
+                // Show loading state
+                generateBtn.classList.add('loading');
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<span>Generating...</span>';
+
+                const formData = new FormData();
+                formData.append('pdf', selectedFile);
+                formData.append('template', selectedTemplate);
+
+                try {
+                    const response = await fetch('/generate-summary', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to generate content');
+                    }
+
+                    const data = await response.json();
+                    displayResult(data.summary);
+                    
+                    // Scroll to results
+                    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to generate content. Please try again.');
+                } finally {
+                    // Reset button state
+                    generateBtn.classList.remove('loading');
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Content';
+                }
+            });
+
+            // Drag and drop handling
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drop-zone--over');
+            });
+
+            ['dragleave', 'dragend'].forEach(type => {
+                dropZone.addEventListener(type, (e) => {
+                    dropZone.classList.remove('drop-zone--over');
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drop-zone--over');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFileSelection(file);
+                }
+            });
+
+            function displayResult(result) {
+                const resultContainer = document.getElementById('result');
+                resultContainer.style.display = 'block';
+                
+                try {
+                    // Parse the JSON string
+                    const jsonObj = typeof result === 'string' ? JSON.parse(result) : result;
+                    
+                    // Group fields by category
+                    const sections = {
+                        'Basic Information': ['Title', 'ShortTitle', 'Summary', 'Introduction', 'Description', 'KeyContentTakeaways'],
+                        'Media Assets': ['BannerImage', 'Image', 'SliderImage', 'ServiceImages', 'HelpBrandImage', 'HelpBrandIcon'],
+                        'Navigation & Links': ['BaseLink', 'AuthorLink', 'RelatedDocument', 'NavigationTitle', 'LinkCaptionInNavigation'],
+                        'SEO & Metadata': ['BrowserTitle', 'MetaKeywords', 'MetaDescription', 'Category', 'CategoryType'],
+                        'Content Details': ['BannerLabel', 'ButtonText', 'Topic', 'PostedBy', 'Posts', 'PostDescription', 'BlogMinutesReading'],
+                        'Settings & Dates': ['FormHide', 'IncludeInSearchResults', 'PressReleaseDate', 'DateBlog']
+                    };
+
+                    // Create formatted HTML content
+                    let formattedContent = '';
+                    
+                    // Create sections
+                    for (const [sectionName, fields] of Object.entries(sections)) {
+                        const sectionFields = fields.filter(field => jsonObj.hasOwnProperty(field));
+                        
+                        if (sectionFields.length > 0) {
+                            formattedContent += `
+                                <div class="content-section">
+                                    <div class="section-header">
+                                        <i class="fas ${getSectionIcon(sectionName)}"></i>
+                                        <h4>${sectionName}</h4>
+                                    </div>
+                                    <div class="field-group">
+                            `;
+
+                            sectionFields.forEach(field => {
+                                const value = jsonObj[field];
+                                const valueType = typeof value;
+                                let valueClass = 'json-string';
+                                
+                                if (valueType === 'number') {
+                                    valueClass = 'json-number';
+                                } else if (valueType === 'boolean') {
+                                    valueClass = 'json-boolean';
+                                }
+
+                                formattedContent += `
+                                    <div class="json-field">
+                                        <span class="json-key">${field}</span>
+                                        <div class="json-value ${valueClass}">${formatValue(value, field)}</div>
+                                    </div>
+                                `;
+                            });
+
+                            formattedContent += `
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    resultContainer.innerHTML = `
+                        <h3><i class="fas fa-file-alt"></i>Generated Content</h3>
+                        <div class="result-content">${formattedContent}</div>
+                    `;
+
+                    // Scroll to results smoothly
+                    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } catch (e) {
+                    console.error('Error formatting JSON:', e);
+                    resultContainer.innerHTML = `
+                        <h3>Generated Content</h3>
+                        <div class="result-content">${result}</div>
+                    `;
+                }
+            }
+
+            function getSectionIcon(sectionName) {
+                const icons = {
+                    'Basic Information': 'fa-info-circle',
+                    'Media Assets': 'fa-images',
+                    'Navigation & Links': 'fa-link',
+                    'SEO & Metadata': 'fa-tags',
+                    'Content Details': 'fa-file-alt',
+                    'Settings & Dates': 'fa-cog'
+                };
+                return icons[sectionName] || 'fa-file';
+            }
+
+            function formatValue(value, field) {
+                if (value === null || value === undefined) {
+                    return '<em>Not specified</em>';
+                }
+                if (typeof value === 'boolean') {
+                    return value ? 'Yes' : 'No';
+                }
+                if (field === 'KeyContentTakeaways' && Array.isArray(value)) {
+                    return `<ul class="takeaways-list">
+                        ${value.map(point => `<li>${point}</li>`).join('')}
+                    </ul>`;
+                }
+                if (Array.isArray(value)) {
+                    return value.join(', ') || '<em>No items</em>';
+                }
+                if (typeof value === 'string' && value.trim() === '') {
+                    return '<em>Empty</em>';
+                }
+                if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+                    return `<a href="${value}" target="_blank" rel="noopener noreferrer">${value}</a>`;
+                }
+                if (field === 'Introduction' || field === 'Description') {
+                    return `<div class="content-text">${value}</div>`;
+                }
+                return value.toString();
+            }
+        });
+    </script>
+</body>
+</html>

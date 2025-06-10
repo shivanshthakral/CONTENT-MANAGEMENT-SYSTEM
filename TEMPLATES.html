@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Content Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #2c3e50;
+            --border-radius: 12px;
+            --section-spacing: 24px;
+            --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: var(--section-spacing);
+            text-align: center;
+        }
+
+        .results-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            background: var(--secondary-color);
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .generate-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: 500;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: var(--secondary-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--section-spacing);
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-content strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .use-case {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .use-case:hover {
+            transform: translateY(-2px);
+        }
+
+        .use-case h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .use-case p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--secondary-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #summary {
+            white-space: pre-wrap;
+        }
+
+        .file-info {
+            color: #666;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        #pdfInput {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .comprehensive-summary {
+            background: linear-gradient(to right bottom, #ffffff, var(--secondary-color));
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fdf3f2;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .section-content {
+                font-size: 1rem;
+            }
+
+            .use-case {
+                padding: 1.25rem;
+            }
+        }
+
+        .template-selection {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .template-selection.active {
+            display: block;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .template-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .template-card.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(to right bottom, #ffffff, var(--secondary-color));
+        }
+
+        .template-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .template-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .template-card li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .template-card li:before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .generate-btn-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .generate-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-weight: 500;
+        }
+
+        .generate-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .generate-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Content Generator</h1>
+        
+        <div class="upload-section">
+            <div class="file-input-wrapper">
+                <div class="file-input">
+                    <p>Click or drag a PDF file here</p>
+                </div>
+                <input type="file" id="pdfInput" accept=".pdf">
+            </div>
+            <div class="file-info" id="fileInfo"></div>
+            
+            <div class="template-selection" id="templateSelection">
+                <h2 class="section-title">Select Template</h2>
+                <div class="template-grid">
+                    <div class="template-card" data-template="1">
+                        <h3>Project Details</h3>
+                        <ul>
+                            <li>Title</li>
+                            <li>Author</li>
+                            <li>Submitted to</li>
+                            <li>Project Summary</li>
+                            <li>Project Details</li>
+                            <li>Real-time Use Cases</li>
+                        </ul>
+                    </div>
+                    <div class="template-card" data-template="2">
+                        <h3>Problem Statement & Objective</h3>
+                        <ul>
+                            <li>Title</li>
+                            <li>Author</li>
+                            <li>Submitted to</li>
+                            <li>Aim</li>
+                            <li>Problem Statement</li>
+                            <li>Objective</li>
+                        </ul>
+                    </div>
+                    <div class="template-card" data-template="3">
+                        <h3>Tools and Modules</h3>
+                        <ul>
+                            <li>Title</li>
+                            <li>Author</li>
+                            <li>Submitted to</li>
+                            <li>Tools Used</li>
+                            <li>Modules Used</li>
+                        </ul>
+                    </div>
+                    <div class="template-card" data-template="4">
+                        <h3>Future Scope</h3>
+                        <ul>
+                            <li>Title</li>
+                            <li>Author</li>
+                            <li>Submitted to</li>
+                            <li>Future Scope</li>
+                        </ul>
+                    </div>
+                    <div class="template-card" data-template="5">
+                        <h3>Conclusion</h3>
+                        <ul>
+                            <li>Title</li>
+                            <li>Author</li>
+                            <li>Submitted to</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="generate-btn-container">
+                    <button class="generate-btn" onclick="uploadPDF()" id="generateBtn">Generate Content</button>
+                </div>
+            </div>
+            <div class="loading" id="loading"></div>
+        </div>
+
+        <div id="summary" class="results-container"></div>
+    </div>
+
+    <script>
+        const pdfInput = document.getElementById("pdfInput");
+        const fileInfo = document.getElementById("fileInfo");
+        const summary = document.getElementById("summary");
+        const generateBtn = document.getElementById("generateBtn");
+        const loading = document.getElementById("loading");
+        const templateSelection = document.getElementById("templateSelection");
+        let selectedTemplate = null;
+
+        // Initialize template selection
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedTemplate = card.dataset.template;
+                generateBtn.disabled = false;
+            });
+        });
+
+        pdfInput.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.type !== 'application/pdf') {
+                    alert('Please select a PDF file');
+                    pdfInput.value = '';
+                    templateSelection.classList.remove('active');
+                    return;
+                }
+                fileInfo.textContent = `Selected file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                templateSelection.classList.add('active');
+                generateBtn.disabled = true; // Disable until template is selected
+            }
+        });
+
+        async function uploadPDF() {
+            if (!selectedTemplate) {
+                alert("Please select a template first");
+                return;
+            }
+
+            const file = pdfInput.files[0];
+            if (!file) {
+                alert("Please select a PDF file");
+                return;
+            }
+
+            loading.style.display = "block";
+            generateBtn.disabled = true;
+            summary.innerHTML = "";
+
+            const formData = new FormData();
+            formData.append("pdf", file);
+            formData.append("template", selectedTemplate);
+
+            try {
+                const response = await fetch("/generate-summary", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                displayTemplateContent(data.summary, selectedTemplate);
+            } catch (error) {
+                console.error("Error:", error);
+                summary.innerHTML = `
+                    <div class="error-message">
+                        <p>Error generating summary. Please try again.</p>
+                        <p>Details: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                loading.style.display = "none";
+                generateBtn.disabled = false;
+            }
+        }
+
+        function displayTemplateContent(content, template) {
+            const lines = content.split('\n');
+            let htmlContent = '';
+
+            // Common header info for all templates
+            const headerInfo = lines.filter(line => 
+                line.startsWith('Title:') || 
+                line.startsWith('Author:') || 
+                line.startsWith('Submitted to:')
+            ).map(line => {
+                const [key, value] = line.split(': ');
+                return `<p><strong>${key}:</strong> ${value || ''}</p>`;
+            }).join('');
+
+            htmlContent += createSection('Document Information', headerInfo);
+
+            // Template specific content
+            switch(template) {
+                case "1":
+                    displayProjectDetailsTemplate(lines, htmlContent);
+                    break;
+                case "2":
+                    displayProblemStatementTemplate(lines, htmlContent);
+                    break;
+                case "3":
+                    displayToolsModulesTemplate(lines, htmlContent);
+                    break;
+                case "4":
+                    displayFutureScopeTemplate(lines, htmlContent);
+                    break;
+                case "5":
+                    displayConclusionTemplate(lines, htmlContent);
+                    break;
+            }
+        }
+
+        function createSection(title, content) {
+            return `
+                <div class="section">
+                    <h2 class="section-title">${title}</h2>
+                    <div class="section-content">${content}</div>
+                </div>
+            `;
+        }
+
+        function displayProjectDetailsTemplate(lines, htmlContent) {
+            const projectSummary = lines.find(line => line.startsWith('Project Summary:'));
+            const projectDetails = lines.find(line => line.startsWith('Project Details:'));
+            const useCases = lines.filter(line => line.startsWith('Use Case'));
+
+            if (projectSummary) {
+                htmlContent += createSection('Project Overview', 
+                    `<p>${projectSummary.split(':')[1].trim()}</p>`);
+            }
+
+            if (projectDetails) {
+                htmlContent += createSection('Project Details', 
+                    `<p>${projectDetails.split(':')[1].trim()}</p>`);
+            }
+
+            if (useCases.length > 0) {
+                const useCasesContent = `
+                    <div class="content-grid">
+                        ${useCases.map((useCase, index) => `
+                            <div class="use-case">
+                                <h3>Use Case ${index + 1}</h3>
+                                <p>${useCase.split(':')[1].trim()}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                htmlContent += createSection('Real-Time Use Cases', useCasesContent);
+            }
+
+            summary.innerHTML = htmlContent;
+        }
+
+        function displayProblemStatementTemplate(lines, htmlContent) {
+            const aim = lines.find(line => line.startsWith('Aim:'));
+            const problemStatement = lines.find(line => line.startsWith('Problem Statement:'));
+            const objective = lines.find(line => line.startsWith('Objective:'));
+
+            if (aim) htmlContent += createSection('Aim', `<p>${aim.split(':')[1].trim()}</p>`);
+            if (problemStatement) htmlContent += createSection('Problem Statement', `<p>${problemStatement.split(':')[1].trim()}</p>`);
+            if (objective) htmlContent += createSection('Objective', `<p>${objective.split(':')[1].trim()}</p>`);
+
+            summary.innerHTML = htmlContent;
+        }
+
+        function displayToolsModulesTemplate(lines, htmlContent) {
+            const tools = lines.find(line => line.startsWith('Tools Used:'));
+            const modules = lines.find(line => line.startsWith('Modules Used:'));
+
+            if (tools) htmlContent += createSection('Tools Used', `<p>${tools.split(':')[1].trim()}</p>`);
+            if (modules) htmlContent += createSection('Modules Used', `<p>${modules.split(':')[1].trim()}</p>`);
+
+            summary.innerHTML = htmlContent;
+        }
+
+        function displayFutureScopeTemplate(lines, htmlContent) {
+            const futureScope = lines.find(line => line.startsWith('Future Scope:'));
+            if (futureScope) htmlContent += createSection('Future Scope', `<p>${futureScope.split(':')[1].trim()}</p>`);
+            summary.innerHTML = htmlContent;
+        }
+
+        function displayConclusionTemplate(lines, htmlContent) {
+            const conclusion = lines.find(line => line.startsWith('Conclusion:'));
+            if (conclusion) htmlContent += createSection('Conclusion', `<p>${conclusion.split(':')[1].trim()}</p>`);
+            summary.innerHTML = htmlContent;
+        }
+
+        // Initialize button state
+        generateBtn.disabled = true;
+    </script>
+</body>
+</html>

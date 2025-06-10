@@ -1,0 +1,86 @@
+{
+    "templates": {
+        "1": {
+            "name": "BLOCK",
+            "description": "Generate comprehensive block content with metadata, images, and blog details",
+            "fields": {
+                "Title": "(Clear, descriptive title)",
+                "ShortTitle": "(Abbreviated but meaningful title)",
+                "Summary": "(Concise teaser text, max 200 chars)",
+                "Introduction": "(Engaging introduction paragraph that sets context)",
+                "Description": "(Detailed content, well-structured with proper paragraphs)",
+                "KeyContentTakeaways": "(Array of key points and takeaways from the content)",
+                "AuthorLink": "(URL format - should start with http:// or https://)",
+                "BannerImage": "(URL format for a relevant banner image)",
+                "BannerLabel": "(Short, impactful label for the banner)",
+                "Image": "(URL format for main content image)",
+                "BaseLink": "(URL format for the main content link)",
+                "FormHide": "(boolean - true or false)",
+                "ButtonText": "(Clear call-to-action text)",
+                "RelatedDocument": "(URL or reference to related content)",
+                "Category": "(Appropriate content category)",
+                "PressReleaseDate": "(Current date in YYYY-MM-DD format)",
+                "BrowserTitle": "(SEO-optimized title)",
+                "MetaKeywords": "(Relevant, comma-separated keywords)",
+                "MetaDescription": "(SEO-optimized description)",
+                "NavigationTitle": "(Clear navigation menu text)",
+                "LinkCaptionInNavigation": "(Descriptive navigation link text)",
+                "Topic": "(Main topic or theme)",
+                "PostedBy": "(Author name with proper capitalization)",
+                "CategoryType": "(Content type classification)",
+                "Posts": "(Related posts or content)",
+                "DateBlog": "(Publication date in YYYY-MM-DD format)",
+                "PostDescription": "(Engaging blog excerpt)",
+                "BlogMinutesReading": "(Realistic reading time in minutes as a number)",
+                "IncludeInSearchResults": "(boolean - true or false)",
+                "SliderImage": "(URL format for slider image)"
+            },
+            "instructions": [
+                "Please ensure:",
+                "1. Each field has meaningful, properly formatted content",
+                "2. Content is professional and aligns with Espire's business context",
+                "3. URLs and links are properly structured",
+                "4. Dates are in YYYY-MM-DD format",
+                "5. Boolean values are proper true/false",
+                "6. All text fields have proper capitalization and punctuation"
+            ]
+        },
+        "2": {
+            "name": "SUMMARY",
+            "description": "Create Digital Experience Platform service content with branding elements",
+            "fields": {
+                "Title": "(Clear, descriptive title focused on DXP)",
+                "ShortTitle": "(Abbreviated but meaningful title)",
+                "Summary": "(Concise teaser text about DXP services, max 200 chars)",
+                "Introduction": "(Engaging introduction paragraph about DXP services)",
+                "Description": "(Detailed content about DXP services, well-structured)",
+                "KeyContentTakeaways": "(Array of key points about DXP services and benefits)",
+                "Image": "(URL format for main content image)",
+                "BaseLink": "(URL format for the main content link)",
+                "FormHide": "(boolean - true or false)",
+                "ButtonText": "(Clear call-to-action text)",
+                "RelatedDocument": "(URL or reference to related DXP content)",
+                "Category": "(Appropriate service category)",
+                "PressReleaseDate": "(Current date in YYYY-MM-DD format)",
+                "BrowserTitle": "(SEO-optimized title for DXP content)",
+                "MetaKeywords": "(DXP-related, comma-separated keywords)",
+                "MetaDescription": "(SEO-optimized description for DXP services)",
+                "NavigationTitle": "(Clear navigation menu text)",
+                "LinkCaptionInNavigation": "(Descriptive navigation link text)",
+                "IncludeInSearchResults": "(boolean - true or false)",
+                "ServiceImages": "(Array of URLs for service-related images)",
+                "HelpBrandImage": "(URL format for brand image)",
+                "HelpBrandIcon": "(URL format for brand icon)"
+            },
+            "instructions": [
+                "Please ensure:",
+                "1. Each field has meaningful, properly formatted content",
+                "2. Content focuses on Digital Experience Platforms and Espire's expertise",
+                "3. URLs and links are properly structured",
+                "4. Dates are in YYYY-MM-DD format",
+                "5. Boolean values are proper true/false",
+                "6. All text fields have proper capitalization and punctuation"
+            ]
+        }
+    }
+} 

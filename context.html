@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espire Infolabs - Company Context</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0046BE;
+            --secondary-color: #00A6ED;
+            --accent-color: #FFB81C;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--light-bg);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: var(--light-bg);
+            transform: skewY(-3deg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item h4 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .solutions {
+            padding: 4rem 0;
+        }
+
+        .solution-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .solution-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .solution-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .solution-image {
+            width: 100%;
+            border-radius: var(--border-radius);
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tech-item {
+            background: var(--light-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .benefits {
+            background: var(--light-bg);
+            padding: 4rem 0;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .solution-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">Espire Infolabs</a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#solutions">Solutions</a>
+                    <a href="#tech-stack">Tech Stack</a>
+                    <a href="/generator">Content Generator</a>
+                </div>
+            </nav>
+            <div class="hero">
+                <h1>Global IT Services & Digital Transformation</h1>
+                <p>Delivering cutting-edge solutions in digital experience platforms, customer communications management, cloud services, analytics, automation, and enterprise integration.</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="content-section">
+        <div class="container">
+            <h2 class="section-title">About Espire Infolabs</h2>
+            <div class="grid">
+                <div class="card">
+                    <i class="fas fa-building card-icon"></i>
+                    <h3>Company Overview</h3>
+                    <p>Established in 2001 and rebranded in 2003, Espire has grown into a mid-sized organization serving clients across industries including finance, healthcare, education, and logistics.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-globe card-icon"></i>
+                    <h3>Global Presence</h3>
+                    <p>Headquartered in Gurugram, India, with offices in the UK, USA, Singapore, Australia, and other countries, enabling seamless collaboration across time zones.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-trophy card-icon"></i>
+                    <h3>Recognition</h3>
+                    <p>Received Sitecore Experience Award for Best Use of Data in 2024 and multiple Stevie Awards in 2024 for innovation in EdTech and FinTech sectors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h4>20+</h4>
+                    <p>Years of Excellence</p>
+                </div>
+                <div class="stat-item">
+                    <h4>1000+</h4>
+                    <p>Global Employees</p>
+                </div>
+                <div class="stat-item">
+                    <h4>500+</h4>
+                    <p>Successful Projects</p>
+                </div>
+                <div class="stat-item">
+                    <h4>6</h4>
+                    <p>Global Offices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solutions" class="solutions">
+        <div class="container">
+            <h2 class="section-title">Enterprise Solutions</h2>
+            <div class="solution-card">
+                <div class="solution-content">
+                    <img src="https://www.espire.com/images/enterprise-solutions.jpg" alt="Enterprise Solutions" class="solution-image">
+                    <div>
+                        <h3>Core Enterprise Solutions</h3>
+                        <p>Espire's enterprise solutions are designed to streamline, modernize, and scale business operations. These solutions include:</p>
+                        <ul>
+                            <li>ERP Systems</li>
+                            <li>CRM Solutions</li>
+                            <li>SCM Systems</li>
+                            <li>HCM Platforms</li>
+                        </ul>
+                        <div class="tech-stack">
+                            <span class="tech-item">SAP S/4HANA</span>
+                            <span class="tech-item">Oracle Fusion</span>
+                            <span class="tech-item">Microsoft Dynamics 365</span>
+                            <span class="tech-item">Salesforce</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-content">
+                    <img src="https://www.espire.com/images/digital-experience.jpg" alt="Digital Experience" class="solution-image">
+                    <div>
+                        <h3>Digital Experience Platforms</h3>
+                        <p>Deep expertise in content management systems (CMS) and digital customer experiences, partnering with leading platforms:</p>
+                        <ul>
+                            <li>Sitecore</li>
+                            <li>Adobe Experience Manager</li>
+                            <li>Microsoft</li>
+                            <li>Oracle</li>
+                            <li>Drupal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech-stack" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>ERP & Finance</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">SAP S/4HANA</span>
+                        <span class="tech-item">Oracle Fusion Cloud ERP</span>
+                        <span class="tech-item">Microsoft Dynamics 365</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>CRM & Customer Experience</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Salesforce</span>
+                        <span class="tech-item">Microsoft Dynamics CRM</span>
+                        <span class="tech-item">Adobe Experience Manager</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Supply Chain & Logistics</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Manhattan</span>
+                        <span class="tech-item">Blue Yonder</span>
+                        <span class="tech-item">SAP SCM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="container">
+            <h2 class="section-title">Key Benefits</h2>
+            <div class="grid">
+                <div class="benefit-card">
+                    <i class="fas fa-chart-line benefit-icon"></i>
+                    <h3>End-to-end Digital Cohesion</h3>
+                    <p>Seamless integration across all business processes and systems</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-rocket benefit-icon"></i>
+                    <h3>Accelerated ROI</h3>
+                    <p>Quick implementation and value realization</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-shield-alt benefit-icon"></i>
+                    <h3>Industry-Ready Compliance</h3>
+                    <p>Built-in best practices and regulatory compliance</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-database benefit-icon"></i>
+                    <h3>Data-Driven Innovation</h3>
+                    <p>Advanced analytics and AI-driven insights</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html> 
