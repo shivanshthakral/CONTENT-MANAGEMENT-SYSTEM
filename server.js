@@ -144,6 +144,12 @@ Analyze the provided document and generate appropriate content for each field.`;
         try {
             // Validate and format the JSON
             const jsonObj = JSON.parse(formattedSummary);
+            
+            // Post-process the PostedBy field
+            if (!jsonObj.PostedBy || jsonObj.PostedBy === "John Doe" || jsonObj.PostedBy.includes("(")) {
+                jsonObj.PostedBy = "Espire Infolabs Team";
+            }
+            
             const prettyJson = JSON.stringify(jsonObj, null, 2);
             
             // Delete the uploaded PDF after processing

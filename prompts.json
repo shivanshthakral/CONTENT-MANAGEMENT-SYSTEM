@@ -1,8 +1,8 @@
 {
     "templates": {
         "1": {
-            "name": "BLOCK",
-            "description": "Generate comprehensive block content with metadata, images, and blog details",
+            "name": "BLOG",
+"description": "Generate comprehensive blog content with metadata, images, and blog details",
             "fields": {
                 "Title": "(Clear, descriptive title)",
                 "ShortTitle": "(Abbreviated but meaningful title)",
@@ -26,7 +26,7 @@
                 "NavigationTitle": "(Clear navigation menu text)",
                 "LinkCaptionInNavigation": "(Descriptive navigation link text)",
                 "Topic": "(Main topic or theme)",
-                "PostedBy": "(Author name with proper capitalization)",
+                "PostedBy": "(Extract the actual author name from the content. If no author is found, use 'Espire Infolabs Team')",
                 "CategoryType": "(Content type classification)",
                 "Posts": "(Related posts or content)",
                 "DateBlog": "(Publication date in YYYY-MM-DD format)",

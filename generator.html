@@ -276,11 +276,8 @@
         }
 
         .json-field {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .json-field.full-width {
@@ -330,10 +327,76 @@
         }
 
         .json-value {
-            color: #2d3748;
-            font-size: 1rem;
-            line-height: 1.5;
+            position: relative;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            margin-top: 0.5rem;
             word-break: break-word;
+            min-height: 40px;
+        }
+
+        .json-value.editable {
+            padding-right: 40px;
+        }
+
+        .edit-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #4299e1;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .edit-btn:hover {
+            background: #ebf8ff;
+        }
+
+        .save-pdf-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .save-pdf-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+
+        .save-pdf-btn:active {
+            transform: translateY(0);
+        }
+
+        .json-value textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 2px solid #4299e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: inherit;
+            resize: vertical;
+            white-space: pre-wrap;
+            line-height: 1.5;
         }
 
         .json-string { color: #2f855a; }
@@ -391,8 +454,8 @@
                 <div class="template-options">
                     <label class="template-option">
                         <input type="radio" name="template" value="1" checked>
-                        <span class="template-name">BLOCK</span>
-                        <span class="template-description">Generate comprehensive block content with metadata, images, and blog details</span>
+                        <span class="template-name">BLOG</span>
+<span class="template-description">Generate comprehensive blog content with metadata, images, and blog details</span>
                     </label>
                     <label class="template-option">
                         <input type="radio" name="template" value="2">
@@ -413,7 +476,90 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
+        // Global functions for edit and save functionality
+        window.makeEditable = function(button) {
+            const valueDiv = button.parentElement;
+            const currentValue = valueDiv.textContent.trim().replace('edit', '');
+            const field = valueDiv.dataset.field;
+            
+            // Create textarea
+            const textarea = document.createElement('textarea');
+            textarea.value = currentValue;
+            textarea.dataset.field = field;
+            
+            // Replace content with textarea
+            valueDiv.innerHTML = '';
+            valueDiv.appendChild(textarea);
+            
+            // Replace edit button with save button
+            const saveButton = document.createElement('button');
+            saveButton.className = 'edit-btn';
+            saveButton.innerHTML = '<i class="fas fa-check"></i>';
+            saveButton.onclick = () => window.saveEdit(saveButton);
+            valueDiv.appendChild(saveButton);
+            
+            // Focus textarea
+            textarea.focus();
+        };
+
+        window.saveEdit = function(button) {
+            const valueDiv = button.parentElement;
+            const textarea = valueDiv.querySelector('textarea');
+            const newValue = textarea.value;
+            const field = valueDiv.dataset.field;
+            
+            // Update the content
+            valueDiv.innerHTML = newValue;
+            
+            // Add back the edit button
+            const editButton = document.createElement('button');
+            editButton.className = 'edit-btn';
+            editButton.innerHTML = '<i class="fas fa-edit"></i>';
+            editButton.onclick = () => window.makeEditable(editButton);
+            valueDiv.appendChild(editButton);
+        };
+
+        window.saveAsJSON = function() {
+            try {
+                const resultContent = document.querySelector('.result-content');
+                const data = {};
+                
+                // Collect all values from the content
+                resultContent.querySelectorAll('.json-field').forEach(field => {
+                    const key = field.querySelector('.json-key').textContent;
+                    const valueDiv = field.querySelector('.json-value');
+                    // Remove the edit button text from the content
+                    const value = valueDiv.textContent.replace('edit', '').trim();
+                    data[key] = value;
+                });
+
+                // Convert to pretty-printed JSON
+                const jsonString = JSON.stringify(data, null, 2);
+                
+                // Create a blob with the JSON data
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                
+                // Create a download link
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'generated-content.json';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+            } catch (error) {
+                console.error('Error saving JSON:', error);
+                alert('Error saving JSON. Please try again.');
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             const dropZone = document.querySelector('.drop-zone');
             const fileInput = document.querySelector('#fileInput');
@@ -559,7 +705,12 @@
                                 formattedContent += `
                                     <div class="json-field">
                                         <span class="json-key">${field}</span>
-                                        <div class="json-value ${valueClass}">${formatValue(value, field)}</div>
+                                        <div class="json-value ${valueClass} editable" data-field="${field}">
+                                            ${formatValue(value, field)}
+                                            <button class="edit-btn" onclick="makeEditable(this)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 `;
                             });
@@ -574,6 +725,10 @@
                     resultContainer.innerHTML = `
                         <h3><i class="fas fa-file-alt"></i>Generated Content</h3>
                         <div class="result-content">${formattedContent}</div>
+                        <button class="save-pdf-btn" onclick="saveAsJSON()">
+                            <i class="fas fa-save"></i>
+                            Save as JSON
+                        </button>
                     `;
 
                     // Scroll to results smoothly
