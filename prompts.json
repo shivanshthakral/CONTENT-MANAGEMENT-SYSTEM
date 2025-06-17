@@ -48,39 +48,38 @@
         "2": {
             "name": "SUMMARY",
             "description": "Create Digital Experience Platform service content with branding elements",
+            "instructions": [
+                "Analyze the provided URL content thoroughly to extract key information about DXP services",
+                "Ensure all generated content is directly relevant to the source material",
+                "Maintain professional tone while keeping content clear and accessible",
+                "Include specific details and examples from the source content",
+                "Structure the content to highlight key service features and benefits",
+                "Ensure all URLs and links are properly formatted and valid"
+            ],
             "fields": {
-                "Title": "(Clear, descriptive title focused on DXP)",
-                "ShortTitle": "(Abbreviated but meaningful title)",
-                "Summary": "(Concise teaser text about DXP services, max 200 chars)",
-                "Introduction": "(Engaging introduction paragraph about DXP services)",
-                "Description": "(Detailed content about DXP services, well-structured)",
-                "KeyContentTakeaways": "(Array of key points about DXP services and benefits)",
-                "Image": "(URL format for main content image)",
-                "BaseLink": "(URL format for the main content link)",
+                "Title": "(Clear, descriptive title focused on DXP services from the source content)",
+                "ShortTitle": "(Abbreviated but meaningful title derived from main content)",
+                "Summary": "(Concise teaser text about DXP services, max 200 chars, based on source content)",
+                "Introduction": "(Engaging introduction paragraph about DXP services, incorporating key points from source)",
+                "Description": "(Detailed content about DXP services, well-structured with specific examples from source)",
+                "KeyContentTakeaways": "(Array of key points about DXP services and benefits, directly from source content)",
+                "Image": "(URL format for main content image, preferably from source content)",
+                "BaseLink": "(URL format for the main content link, should be the source URL)",
                 "FormHide": "(boolean - true or false)",
-                "ButtonText": "(Clear call-to-action text)",
-                "RelatedDocument": "(URL or reference to related DXP content)",
-                "Category": "(Appropriate service category)",
+                "ButtonText": "(Clear call-to-action text based on source content)",
+                "RelatedDocument": "(URL or reference to related DXP content from source)",
+                "Category": "(Appropriate service category based on source content)",
                 "PressReleaseDate": "(Current date in YYYY-MM-DD format)",
-                "BrowserTitle": "(SEO-optimized title for DXP content)",
-                "MetaKeywords": "(DXP-related, comma-separated keywords)",
-                "MetaDescription": "(SEO-optimized description for DXP services)",
-                "NavigationTitle": "(Clear navigation menu text)",
-                "LinkCaptionInNavigation": "(Descriptive navigation link text)",
+                "BrowserTitle": "(SEO-optimized title for DXP content, incorporating key terms from source)",
+                "MetaKeywords": "(DXP-related, comma-separated keywords extracted from source content)",
+                "MetaDescription": "(SEO-optimized description for DXP services, based on source content)",
+                "NavigationTitle": "(Clear navigation menu text derived from source content)",
+                "LinkCaptionInNavigation": "(Descriptive navigation link text based on source content)",
                 "IncludeInSearchResults": "(boolean - true or false)",
-                "ServiceImages": "(Array of URLs for service-related images)",
+                "ServiceImages": "(Array of URLs for service-related images from source content)",
                 "HelpBrandImage": "(URL format for brand image)",
                 "HelpBrandIcon": "(URL format for brand icon)"
-            },
-            "instructions": [
-                "Please ensure:",
-                "1. Each field has meaningful, properly formatted content",
-                "2. Content focuses on Digital Experience Platforms and Espire's expertise",
-                "3. URLs and links are properly structured",
-                "4. Dates are in YYYY-MM-DD format",
-                "5. Boolean values are proper true/false",
-                "6. All text fields have proper capitalization and punctuation"
-            ]
+            }
         }
     }
 } 

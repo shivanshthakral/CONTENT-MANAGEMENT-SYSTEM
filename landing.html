@@ -53,6 +53,192 @@
             padding: 1rem 0;
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .settings-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .settings-btn i {
+            font-size: 1rem;
+        }
+
+        /* Settings Modal Styles */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .settings-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10000;
+        }
+
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .settings-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 16px;
+            color: #2d3748;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .settings-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .settings-options label:hover {
+            background-color: #f7fafc;
+        }
+
+        .settings-options input[type="radio"],
+        .settings-options input[type="checkbox"] {
+            accent-color: var(--primary-color);
+        }
+
+        .checkbox-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-section textarea,
+        .settings-section select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .settings-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .settings-section select {
+            background-color: white;
+        }
+
+        .settings-footer {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: right;
+            background: #f8fafc;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .save-settings-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-settings-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .settings-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .settings-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -222,9 +408,15 @@
 <body>
     <header class="header">
         <div class="container">
-            <nav class="nav">
+            <div class="nav">
                 <a href="/" class="logo">Espire Infolabs</a>
-            </nav>
+                <div class="nav-right">
+                    <button id="settingsBtn" class="settings-btn">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                </div>
+            </div>
             <div class="hero">
                 <h1>Document AI Platform</h1>
                 <p>Explore Espire's capabilities and generate content using our advanced Document AI technology</p>
@@ -261,5 +453,406 @@
             </a>
         </div>
     </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2><i class="fas fa-cog"></i> Content Generation Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="settings-body">
+                <!-- Tone of Content -->
+                <div class="settings-section">
+                    <h3>✍️ Tone of Content</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="tone" value="professional"> Professional (B2B blogs)</label>
+                        <label><input type="radio" name="tone" value="conversational"> Conversational</label>
+                        <label><input type="radio" name="tone" value="formal"> Formal</label>
+                        <label><input type="radio" name="tone" value="informal"> Informal</label>
+                        <label><input type="radio" name="tone" value="enthusiastic"> Enthusiastic</label>
+                        <label><input type="radio" name="tone" value="persuasive"> Persuasive</label>
+                        <label><input type="radio" name="tone" value="informative"> Informative</label>
+                        <label><input type="radio" name="tone" value="technical"> Technical</label>
+                    </div>
+                </div>
+
+                <!-- Content Length -->
+                <div class="settings-section">
+                    <h3>📄 Content Length</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="length" value="short"> Short (Summary level)</label>
+                        <label><input type="radio" name="length" value="medium"> Medium (300-500 words)</label>
+                        <label><input type="radio" name="length" value="long"> Long-form (1000+ words)</label>
+                    </div>
+                </div>
+
+                <!-- Target Audience -->
+                <div class="settings-section">
+                    <h3>🧠 Target Audience</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="audience" value="beginners"> Beginners</label>
+                        <label><input type="radio" name="audience" value="intermediate"> Intermediate professionals</label>
+                        <label><input type="radio" name="audience" value="experts"> Industry Experts</label>
+                        <label><input type="radio" name="audience" value="executives"> Business Executives</label>
+                        <label><input type="radio" name="audience" value="students"> Students</label>
+                    </div>
+                </div>
+
+                <!-- Content Purpose -->
+                <div class="settings-section">
+                    <h3>🔍 Content Purpose</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="purpose" value="blog"> Blog Post</label>
+                        <label><input type="radio" name="purpose" value="product"> Product Description</label>
+                        <label><input type="radio" name="purpose" value="social"> Social Media Teaser</label>
+                        <label><input type="radio" name="purpose" value="case-study"> Case Study</label>
+                        <label><input type="radio" name="purpose" value="whitepaper"> Whitepaper Summary</label>
+                        <label><input type="radio" name="purpose" value="executive"> Executive Summary</label>
+                        <label><input type="radio" name="purpose" value="seo"> SEO Content</label>
+                        <label><input type="radio" name="purpose" value="marketing"> Marketing Copy</label>
+                    </div>
+                </div>
+
+                <!-- Keywords -->
+                <div class="settings-section">
+                    <h3>📢 Keywords to Include (SEO)</h3>
+                    <textarea id="keywords" placeholder="Enter keywords separated by commas"></textarea>
+                </div>
+
+                <!-- Content Focus -->
+                <div class="settings-section">
+                    <h3>🧩 Content Focus / Subdomain</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="focus" value="erp"> ERP</label>
+                        <label><input type="radio" name="focus" value="crm"> CRM</label>
+                        <label><input type="radio" name="focus" value="scm"> SCM</label>
+                        <label><input type="radio" name="focus" value="hcm"> HCM</label>
+                        <label><input type="radio" name="focus" value="insurance"> Insurance</label>
+                        <label><input type="radio" name="focus" value="education"> Higher Education</label>
+                        <label><input type="radio" name="focus" value="manufacturing"> Manufacturing</label>
+                        <label><input type="radio" name="focus" value="logistics"> Logistics</label>
+                        <label><input type="radio" name="focus" value="enterprise"> General Enterprise Solutions</label>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="settings-section">
+                    <h3>📚 Use Case / Scenario</h3>
+                    <textarea id="useCase" placeholder="Describe your use case or scenario"></textarea>
+                </div>
+
+                <!-- Image Options -->
+                <div class="settings-section">
+                    <h3>🖼️ Image Options</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="images" value="urls"> Include Image URLs</label>
+                        <label><input type="checkbox" name="images" value="ideas"> Suggest image ideas</label>
+                        <label><input type="checkbox" name="images" value="alt"> Add alt text to images</label>
+                    </div>
+                </div>
+
+                <!-- Content Format -->
+                <div class="settings-section">
+                    <h3>🔗 Content Format</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="format" value="paragraph"> Paragraph</label>
+                        <label><input type="radio" name="format" value="bullet"> Bullet Points</label>
+                        <label><input type="radio" name="format" value="numbered"> Numbered Lists</label>
+                        <label><input type="radio" name="format" value="mixed"> Mixed</label>
+                    </div>
+                </div>
+
+                <!-- Reading Time -->
+                <div class="settings-section">
+                    <h3>🕰️ Blog Reading Time Target</h3>
+                    <select id="readingTime">
+                        <option value="2">2 minutes</option>
+                        <option value="5">5 minutes</option>
+                        <option value="10">10 minutes</option>
+                        <option value="15">15 minutes</option>
+                    </select>
+                </div>
+
+                <!-- Auto-Fill Options -->
+                <div class="settings-section">
+                    <h3>💡 Optional Fields to Auto-Fill</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="autofill" value="meta-desc"> Meta Description</label>
+                        <label><input type="checkbox" name="autofill" value="meta-keywords"> Meta Keywords</label>
+                        <label><input type="checkbox" name="autofill" value="nav-title"> Navigation Title</label>
+                        <label><input type="checkbox" name="autofill" value="summary"> Summary for teasers</label>
+                        <label><input type="checkbox" name="autofill" value="reading-time"> Blog Minutes Reading</label>
+                    </div>
+                </div>
+
+                <!-- AI Creativity Level -->
+                <div class="settings-section">
+                    <h3>🧠 AI Creativity Level</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="creativity" value="low"> Low (Factual/Precise)</label>
+                        <label><input type="radio" name="creativity" value="medium"> Medium (Balanced)</label>
+                        <label><input type="radio" name="creativity" value="high"> High (Creative/Explorative)</label>
+                    </div>
+                </div>
+
+                <!-- Language/Region -->
+                <div class="settings-section">
+                    <h3>🌐 Language/Region Preferences</h3>
+                    <select id="language">
+                        <option value="en-us">English (US)</option>
+                        <option value="en-uk">English (UK)</option>
+                        <option value="en-in">English (India)</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+
+                <!-- Content Restrictions -->
+                <div class="settings-section">
+                    <h3>🛑 Content Restrictions</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="restrictions" value="no-jargon"> Do not include technical jargon</label>
+                        <label><input type="checkbox" name="restrictions" value="no-competitors"> Do not mention competitors</label>
+                    </div>
+                    <textarea id="avoidTopics" placeholder="Enter topics/phrases to avoid (separated by commas)"></textarea>
+                </div>
+
+                <!-- Link Preferences -->
+                <div class="settings-section">
+                    <h3>🔗 Link Preferences</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="links" value="internal"> Include internal links</label>
+                        <label><input type="radio" name="links" value="external"> Include external links</label>
+                        <label><input type="radio" name="links" value="both"> Both internal and external</label>
+                        <label><input type="radio" name="links" value="none"> No links</label>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button id="saveSettings" class="save-settings-btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Settings functionality
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const saveSettingsBtn = document.getElementById('saveSettings');
+
+        // Load saved settings from localStorage
+        function loadSavedSettings() {
+            // Do not pre-select any options. Modal should always open with no options selected.
+            // Optionally, clear all selections and values when opening modal
+            // Clear radio buttons
+            ['tone', 'length', 'audience', 'purpose', 'focus', 'format', 'creativity', 'links'].forEach(setting => {
+                document.querySelectorAll(`input[name="${setting}"]`).forEach(radio => radio.checked = false);
+            });
+            // Clear checkboxes
+            ['images', 'autofill', 'restrictions'].forEach(setting => {
+                document.querySelectorAll(`input[name="${setting}"]`).forEach(checkbox => checkbox.checked = false);
+            });
+            // Clear text inputs
+            ['keywords', 'useCase', 'avoidTopics'].forEach(setting => {
+                const input = document.getElementById(setting);
+                if (input) input.value = '';
+            });
+            // Reset selects to first option
+            ['readingTime', 'language'].forEach(setting => {
+                const select = document.getElementById(setting);
+                if (select) select.selectedIndex = 0;
+            });
+        }
+
+        // Get current settings
+        function getCurrentSettings() {
+            const settings = {
+                tone: document.querySelector('input[name="tone"]:checked')?.value,
+                length: document.querySelector('input[name="length"]:checked')?.value,
+                audience: document.querySelector('input[name="audience"]:checked')?.value,
+                purpose: document.querySelector('input[name="purpose"]:checked')?.value,
+                focus: document.querySelector('input[name="focus"]:checked')?.value,
+                format: document.querySelector('input[name="format"]:checked')?.value,
+                creativity: document.querySelector('input[name="creativity"]:checked')?.value,
+                links: document.querySelector('input[name="links"]:checked')?.value,
+                
+                // Get checkbox values as arrays
+                images: Array.from(document.querySelectorAll('input[name="images"]:checked')).map(cb => cb.value),
+                autofill: Array.from(document.querySelectorAll('input[name="autofill"]:checked')).map(cb => cb.value),
+                restrictions: Array.from(document.querySelectorAll('input[name="restrictions"]:checked')).map(cb => cb.value),
+                
+                // Get text input values
+                keywords: document.getElementById('keywords')?.value,
+                useCase: document.getElementById('useCase')?.value,
+                avoidTopics: document.getElementById('avoidTopics')?.value,
+                
+                // Get select values
+                readingTime: document.getElementById('readingTime')?.value,
+                language: document.getElementById('language')?.value
+            };
+
+            return settings;
+        }
+
+        // Validate settings
+        function validateSettings() {
+            const requiredSettings = ['tone', 'length', 'audience', 'purpose', 'focus', 'format'];
+            const missingSettings = [];
+
+            requiredSettings.forEach(setting => {
+                if (!document.querySelector(`input[name="${setting}"]:checked`)) {
+                    missingSettings.push(setting.charAt(0).toUpperCase() + setting.slice(1));
+                }
+            });
+
+            if (missingSettings.length > 0) {
+                alert(`Please select the following required settings:\n- ${missingSettings.join('\n- ')}`);
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveSettings() {
+            if (!validateSettings()) {
+                return;
+            }
+
+            const settings = getCurrentSettings();
+            localStorage.setItem('contentSettings', JSON.stringify(settings));
+            settingsModal.style.display = 'none';
+        }
+
+        // Function to apply settings to content generation
+        function applySettingsToContent(content) {
+            const settings = JSON.parse(localStorage.getItem('contentSettings') || '{}');
+            
+            // Apply tone
+            if (settings.tone) {
+                // Adjust content tone based on selection
+                switch(settings.tone) {
+                    case 'professional':
+                        // Make content more formal and business-oriented
+                        break;
+                    case 'conversational':
+                        // Make content more casual and engaging
+                        break;
+                    // Add other tone cases
+                }
+            }
+
+            // Apply length
+            if (settings.length) {
+                // Adjust content length based on selection
+                switch(settings.length) {
+                    case 'short':
+                        // Summarize content
+                        break;
+                    case 'medium':
+                        // Keep content at medium length
+                        break;
+                    case 'long':
+                        // Expand content with more details
+                        break;
+                }
+            }
+
+            // Apply audience level
+            if (settings.audience) {
+                // Adjust content complexity based on audience
+                switch(settings.audience) {
+                    case 'beginners':
+                        // Simplify language and add more explanations
+                        break;
+                    case 'experts':
+                        // Use more technical terms and advanced concepts
+                        break;
+                    // Add other audience cases
+                }
+            }
+
+            // Apply content format
+            if (settings.format) {
+                // Format content based on selection
+                switch(settings.format) {
+                    case 'bullet':
+                        // Convert to bullet points
+                        break;
+                    case 'numbered':
+                        // Convert to numbered lists
+                        break;
+                    case 'mixed':
+                        // Mix different formats
+                        break;
+                }
+            }
+
+            // Apply restrictions
+            if (settings.restrictions) {
+                if (settings.restrictions.includes('no-jargon')) {
+                    // Remove technical jargon
+                }
+                if (settings.restrictions.includes('no-competitors')) {
+                    // Remove competitor mentions
+                }
+            }
+
+            // Apply keywords if provided
+            if (settings.keywords) {
+                // Ensure keywords are naturally incorporated
+            }
+
+            // Apply language/region preferences
+            if (settings.language) {
+                // Adjust language based on region
+            }
+
+            return content;
+        }
+
+        // Event listeners for settings modal
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'block';
+            loadSavedSettings();
+        });
+
+        closeBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        saveSettingsBtn.addEventListener('click', saveSettings);
+
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', loadSavedSettings);
+
+        // Event listeners for option cards
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                // Check if settings are saved
+                const savedSettings = localStorage.getItem('contentSettings');
+                if (!savedSettings || !validateSettings()) {
+                    settingsModal.style.display = 'block';
+                    return;
+                }
+
+                // Save current settings again to ensure latest
+                const settings = getCurrentSettings();
+                localStorage.setItem('contentSettings', JSON.stringify(settings));
+                
+                // Redirect to the selected page
+                window.location.href = href;
+            });
+        });
+    </script>
 </body>
 </html> 

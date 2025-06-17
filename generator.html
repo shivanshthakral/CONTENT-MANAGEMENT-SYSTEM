@@ -30,11 +30,13 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            position: relative;
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
+            align-items: center;
         }
 
         .nav a {
@@ -45,6 +47,30 @@
 
         .nav a:hover {
             color: #4299e1;
+        }
+
+        .settings-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+        }
+
+        .settings-btn:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        .settings-btn i {
+            font-size: 1rem;
         }
 
         .header {
@@ -386,6 +412,31 @@
             transform: translateY(0);
         }
 
+        .save-json-btn {
+            display: block;
+            width: fit-content;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%); /* Green gradient */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.1);
+        }
+
+        .save-json-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+            transform: translateY(-2px);
+        }
+
+        .save-json-btn:active {
+            transform: translateY(0);
+        }
+
         .json-value textarea {
             width: 100%;
             min-height: 100px;
@@ -420,17 +471,276 @@
         #result h3 i {
             font-size: 1.5rem;
         }
+
+        /* Settings Modal Styles */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .settings-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10000;
+        }
+
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .settings-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 16px;
+            color: #2d3748;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .settings-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .settings-options label:hover {
+            background-color: #f7fafc;
+        }
+
+        .settings-options input[type="radio"],
+        .settings-options input[type="checkbox"] {
+            accent-color: #4299e1;
+        }
+
+        .checkbox-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-section textarea,
+        .settings-section select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .settings-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .settings-section select {
+            background-color: white;
+        }
+
+        .settings-footer {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: right;
+            background: #f8fafc;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .save-settings-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-settings-btn:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .settings-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .settings-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* New Styles for Multi-Input */
+        .input-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .input-section h3 {
+            color: #4169E1;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .input-entry {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 1.5rem;
+            border: 2px dashed #a0aec0;
+            border-radius: 8px;
+            background: #f7fafc;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .input-entry .choose-file-btn, .input-entry input[type="text"] {
+            flex-grow: 1;
+            max-width: 300px; /* Adjust as needed */
+        }
+
+        .input-entry .remove-input-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            color: #e53e3e; /* Red for delete */
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .input-entry .remove-input-btn:hover {
+            color: #c53030;
+        }
+
+        .add-more-btn {
+            display: block;
+            width: fit-content;
+            margin: 1.5rem auto 0;
+            padding: 0.75rem 1.5rem;
+            background: #48bb78; /* Green for add */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-more-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .add-more-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .selected-file, .selected-url {
+            font-weight: 500;
+            color: #2d3748;
+            margin-left: 10px;
+        }
+
+        .url-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 1.5rem;
+            border: 2px dashed #a0aec0;
+            border-radius: 8px;
+            background: #f7fafc;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .url-input-group input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <nav class="nav">
+        <div class="nav">
             <a href="/" class="logo">Espire Infolabs</a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/context">Company Context</a>
+            <div style="display: flex; align-items: center;">
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/context">Company Context</a>
+                </div>
+                <button id="settingsBtn" class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </button>
             </div>
-        </nav>
+        </div>
 
         <div class="header">
             <h1>Content Generator using Document AI</h1>
@@ -438,24 +748,34 @@
         </div>
 
         <div class="main-content">
-            <!-- File Upload Section -->
-            <div class="drop-zone" id="dropZone">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Drag & Drop your PDF here</p>
-                <p>or</p>
-                <button class="choose-file-btn">Choose File</button>
-                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
-                <p class="selected-file"></p>
+            <!-- Combined Input Section -->
+            <div id="combinedInputSection" class="input-section">
+                <h3>Upload Documents & Add URLs (Max 7)</h3>
+                <!-- Initial File Upload and URL Input Section -->
+                <div class="drop-zone" id="initialDropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop your PDF here</p>
+                    <p>or</p>
+                    <button class="choose-file-btn" id="initialChooseFileBtn">Choose File</button>
+                    <input type="file" id="initialFileInput" accept=".pdf" style="display: none;">
+                    <span class="selected-file" id="initialSelectedFile"></span>
+                    <div style="margin-top: 1rem;">
+                        <input type="text" id="initialPdfUrlInput" placeholder="Or paste PDF URL here" style="width: 60%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;" />
+                    </div>
+                </div>
+                <!-- Add More buttons will be placed dynamically by JS within this section -->
+                <button id="addFileBtn" class="add-more-btn" style="display: none;"><i class="fas fa-plus"></i> Add More Document</button>
+                <button id="addUrlBtn" class="add-more-btn" style="display: none;"><i class="fas fa-plus"></i> Add More URL</button>
             </div>
 
             <!-- Template Selection Section -->
-            <div class="template-section">
+            <div class="template-section" style="margin-top: 2rem;">
                 <h3>Select Template</h3>
                 <div class="template-options">
                     <label class="template-option">
-                        <input type="radio" name="template" value="1" checked>
+                        <input type="radio" name="template" value="1">
                         <span class="template-name">BLOG</span>
-<span class="template-description">Generate comprehensive blog content with metadata, images, and blog details</span>
+                        <span class="template-description">Generate comprehensive blog content with metadata, images, and blog details</span>
                     </label>
                     <label class="template-option">
                         <input type="radio" name="template" value="2">
@@ -473,6 +793,9 @@
 
             <!-- Results Section -->
             <div id="result" style="display: none;"></div>
+
+            <!-- Dynamic Content Section -->
+            </div>
         </div>
     </div>
 
@@ -529,7 +852,7 @@
                 
                 // Collect all values from the content
                 resultContent.querySelectorAll('.json-field').forEach(field => {
-                    const key = field.querySelector('.json-key').textContent;
+                    const key = field.querySelector('.json-key').textContent.replace(':', '');
                     const valueDiv = field.querySelector('.json-value');
                     // Remove the edit button text from the content
                     const value = valueDiv.textContent.replace('edit', '').trim();
@@ -560,73 +883,444 @@
             }
         };
 
+        function displayResult(result) {
+            const resultContainer = document.getElementById('result');
+            resultContainer.style.display = 'block';
+            try {
+                // Parse the JSON string
+                const jsonObj = typeof result === 'string' ? JSON.parse(result) : result;
+                
+                // Group fields by category
+                const sections = {
+                    'Basic Information': ['Title', 'ShortTitle', 'Summary', 'Introduction', 'Description', 'KeyContentTakeaways'],
+                    'Media Assets': ['BannerImage', 'Image', 'SliderImage', 'ServiceImages', 'HelpBrandImage', 'HelpBrandIcon'],
+                    'Navigation & Links': ['BaseLink', 'AuthorLink', 'RelatedDocument', 'NavigationTitle', 'LinkCaptionInNavigation'],
+                    'SEO & Metadata': ['BrowserTitle', 'MetaKeywords', 'MetaDescription', 'Category', 'CategoryType'],
+                    'Content Details': ['BannerLabel', 'ButtonText', 'Topic', 'PostedBy', 'Posts', 'PostDescription', 'BlogMinutesReading'],
+                    'Settings & Dates': ['FormHide', 'IncludeInSearchResults', 'PressReleaseDate', 'DateBlog']
+                };
+
+                // Create formatted HTML content
+                let formattedContent = '';
+                
+                // Create sections
+                for (const [sectionName, fields] of Object.entries(sections)) {
+                    const sectionFields = fields.filter(field => jsonObj.hasOwnProperty(field));
+                    
+                    if (sectionFields.length > 0) {
+                        formattedContent += `
+                            <div class="content-section">
+                                <div class="section-header">
+                                    <i class="fas ${getSectionIcon(sectionName)}"></i>
+                                    <h4>${sectionName}</h4>
+                                </div>
+                                <div class="field-group">
+                        `;
+
+                        sectionFields.forEach(field => {
+                            const value = jsonObj[field];
+                            const valueType = typeof value;
+                            let valueClass = 'json-string';
+                            
+                            if (valueType === 'number') {
+                                valueClass = 'json-number';
+                            } else if (valueType === 'boolean') {
+                                valueClass = 'json-boolean';
+                            }
+
+                            formattedContent += `
+                                <div class="json-field">
+                                    <span class="json-key">${field}</span>
+                                    <div class="json-value ${valueClass} editable" data-field="${field}">
+                                        ${formatValue(value, field)}
+                                        <button class="edit-btn" onclick="makeEditable(this)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        formattedContent += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                resultContainer.innerHTML = `
+                    <h3><i class="fas fa-file-alt"></i>Generated Content</h3>
+                    <div class="result-content">${formattedContent}</div>
+                    <button class="save-json-btn" onclick="saveAsJSON()">
+                        <i class="fas fa-save"></i>
+                        Save as JSON
+                    </button>
+                `;
+
+                // Scroll to results smoothly
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (e) {
+                console.error('Error formatting JSON:', e);
+                resultContainer.innerHTML = `
+                    <h3>Generated Content</h3>
+                    <div class="result-content">${result}</div>
+                `;
+            }
+        }
+
+        function getSectionIcon(sectionName) {
+            const icons = {
+                'Basic Information': 'fa-info-circle',
+                'Media Assets': 'fa-images',
+                'Navigation & Links': 'fa-link',
+                'SEO & Metadata': 'fa-tags',
+                'Content Details': 'fa-file-alt',
+                'Settings & Dates': 'fa-cog'
+            };
+            return icons[sectionName] || 'fa-file';
+        }
+
+        function formatValue(value, field) {
+            if (value === null || value === undefined) {
+                return '<em>Not specified</em>';
+            }
+            if (typeof value === 'boolean') {
+                return value ? 'Yes' : 'No';
+            }
+            if (field === 'KeyContentTakeaways' && Array.isArray(value)) {
+                return `<ul class="takeaways-list">
+                    ${value.map(point => `<li>${point}</li>`).join('')}
+                </ul>`;
+            }
+            if (Array.isArray(value)) {
+                return value.join(', ') || '<em>No items</em>';
+            }
+            if (typeof value === 'string' && value.trim() === '') {
+                return '<em>Empty</em>';
+            }
+            if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+                return `<a href="${value}" target="_blank" rel="noopener noreferrer">${value}</a>`;
+            }
+            if (field === 'Introduction' || field === 'Description') {
+                return `<div class="content-text">${value}</div>`;
+            }
+            return value.toString();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const dropZone = document.querySelector('.drop-zone');
-            const fileInput = document.querySelector('#fileInput');
+            const initialDropZone = document.getElementById('initialDropZone');
+            const initialChooseFileBtn = document.getElementById('initialChooseFileBtn');
+            const initialFileInput = document.getElementById('initialFileInput');
+            const initialSelectedFileSpan = document.getElementById('initialSelectedFile');
+            const initialPdfUrlInput = document.getElementById('initialPdfUrlInput');
+
+            const dynamicFileUploadContainer = document.getElementById('dynamicFileUploadContainer');
+            const dynamicUrlInputContainer = document.getElementById('dynamicUrlInputContainer');
+
+            const addFileBtn = document.getElementById('addFileBtn');
+            const addUrlBtn = document.getElementById('addUrlBtn');
             const generateBtn = document.querySelector('#generateBtn');
             const templateOptions = document.querySelectorAll('input[name="template"]');
-            let selectedFile = null;
 
-            // File selection handling
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    handleFileSelection(file);
-                }
-            });
+            let selectedFiles = []; // Array to store File objects
+            let selectedUrls = [];  // Array to store URL strings
 
-            // Enable "Choose File" button
-            document.querySelector('.choose-file-btn').addEventListener('click', () => {
-                fileInput.click();
-            });
+            const MAX_INPUTS = 7;
 
-            function handleFileSelection(file) {
-                if (file.type === 'application/pdf') {
-                    selectedFile = file;
-                    document.querySelector('.selected-file').textContent = `Selected file: ${file.name}`;
+            function updateGenerateBtnState() {
+                const templateSelected = document.querySelector('input[name="template"]:checked');
+                // Enable if at least one file OR one URL is present AND a template is selected
+                if ((selectedFiles.filter(Boolean).length > 0 || selectedUrls.filter(url => url && url.trim() !== '').length > 0) && templateSelected) {
                     generateBtn.disabled = false;
                 } else {
-                    alert('Please upload a PDF file');
                     generateBtn.disabled = true;
                 }
             }
 
-            // Generate button click handler
-            generateBtn.addEventListener('click', async () => {
-                if (!selectedFile) {
-                    alert('Please select a PDF file first');
-                    return;
+            function updateAddButtonVisibility() {
+                const totalFiles = selectedFiles.filter(file => file !== null).length; // Count actual files
+                const totalUrls = selectedUrls.filter(url => url && url.trim() !== '').length; // Count actual URLs
+                const totalInputs = totalFiles + totalUrls;
+
+                if (totalInputs < MAX_INPUTS) {
+                    // If any files are selected, show add file button unless max is reached
+                    if (totalFiles > 0 || (totalFiles === 0 && totalUrls === 0 && initialPdfUrlInput.value.trim() === '')) {
+                        addFileBtn.style.display = 'inline-block';
+                    } else {
+                        addFileBtn.style.display = 'none';
+                    }
+
+                    // If any URLs are selected, show add url button unless max is reached
+                    if (totalUrls > 0 || (totalFiles === 0 && totalUrls === 0 && initialFileInput.value === '')) {
+                        addUrlBtn.style.display = 'inline-block';
+                    } else {
+                        addUrlBtn.style.display = 'none';
+                    }
+                } else {
+                    addFileBtn.style.display = 'none';
+                    addUrlBtn.style.display = 'none';
                 }
 
-                const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
+                // Special case: if only initial inputs are empty, hide both add buttons
+                if (totalInputs === 0 && initialFileInput.value === '' && initialPdfUrlInput.value.trim() === '') {
+                    addFileBtn.style.display = 'none';
+                    addUrlBtn.style.display = 'none';
+                }
+            }
+
+            // --- Initial File Input Handling ---
+            initialChooseFileBtn.addEventListener('click', () => {
+                initialFileInput.click();
+            });
+
+            initialFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    selectedFiles[0] = file; // Store the first file at index 0
+                    initialSelectedFileSpan.textContent = `Selected file: ${file.name}`;
+                    initialPdfUrlInput.value = ''; // Clear URL input if file is chosen
+                    selectedUrls = []; // Clear all URLs
+                    // Clear dynamic URL inputs if any were added
+                    Array.from(document.querySelectorAll('#combinedInputSection .url-input-group')).slice(1).forEach(el => el.remove());
+                } else {
+                    selectedFiles[0] = null; // Clear the first file
+                    initialSelectedFileSpan.textContent = '';
+                }
+                updateGenerateBtnState();
+                updateAddButtonVisibility();
+            });
+
+            // Drag and drop handling for initial drop zone
+            initialDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                initialDropZone.classList.add('drop-zone--over');
+            });
+
+            ['dragleave', 'dragend'].forEach(type => {
+                initialDropZone.addEventListener(type, () => {
+                    initialDropZone.classList.remove('drop-zone--over');
+                });
+            });
+
+            initialDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                initialDropZone.classList.remove('drop-zone--over');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    initialFileInput.files = e.dataTransfer.files; // Assign dropped file to input
+                    const changeEvent = new Event('change');
+                    initialFileInput.dispatchEvent(changeEvent); // Trigger change event
+                }
+            });
+
+            // --- Initial URL Input Handling ---
+            initialPdfUrlInput.addEventListener('input', () => {
+                const url = initialPdfUrlInput.value.trim();
+                if (url) {
+                    selectedUrls[0] = url; // Store the first URL at index 0
+                    // Clear file input if URL is typed
+                    initialFileInput.value = '';
+                    initialSelectedFileSpan.textContent = '';
+                    selectedFiles = []; // Clear all files
+                    // Clear dynamic file inputs if any were added
+                    Array.from(document.querySelectorAll('#combinedInputSection .input-entry.drop-zone')).slice(1).forEach(el => el.remove());
+                } else {
+                    selectedUrls[0] = null; // Clear the first URL
+                }
+                updateGenerateBtnState();
+                updateAddButtonVisibility();
+            });
+
+            // --- Dynamic Input Creation Functions ---
+            function addFileInput(file = null) {
+                if (selectedFiles.filter(Boolean).length + selectedUrls.filter(Boolean).length >= MAX_INPUTS) return;
+
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = 'input-entry drop-zone';
+                inputWrapper.style.marginBottom = '1rem';
+                inputWrapper.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop your PDF here</p>
+                    <p>or</p>
+                    <button type="button" class="choose-file-btn">Choose File</button>
+                    <input type="file" accept=".pdf" style="display: none;">
+                    <span class="selected-file">${file ? `Selected file: ${file.name}` : ''}</span>
+                    <button type="button" class="remove-input-btn" style="background: none; border: none; color: #dc3545; cursor: pointer; margin-left: 10px;"><i class="fas fa-times-circle"></i></button>
+                `;
+
+                const currentFileInput = inputWrapper.querySelector('input[type="file"]');
+                const currentChooseBtn = inputWrapper.querySelector('.choose-file-btn');
+                const removeBtn = inputWrapper.querySelector('.remove-input-btn');
+                const selectedFileSpan = inputWrapper.querySelector('.selected-file');
+
+                // Find the next available index for a new file
+                let newIndex = 1; // Start from 1, as 0 is for initialFileInput
+                while (newIndex < MAX_INPUTS && selectedFiles[newIndex] !== undefined && selectedFiles[newIndex] !== null) {
+                    newIndex++;
+                }
+                if (newIndex >= MAX_INPUTS) return; // Prevent exceeding max inputs
+
+                if (file) {
+                    selectedFiles[newIndex] = file;
+                    selectedFileSpan.textContent = `Selected file: ${file.name}`;
+                }
+
+                currentChooseBtn.addEventListener('click', () => {
+                    currentFileInput.click();
+                });
+
+                currentFileInput.addEventListener('change', (e) => {
+                    const newFile = e.target.files[0];
+                    // Get the index from the position in the DOM
+                    const idx = Array.from(inputWrapper.parentNode.children).filter(el => el.classList.contains('drop-zone')).indexOf(inputWrapper);
+                    if (newFile) {
+                        selectedFiles[idx] = newFile;
+                        selectedFileSpan.textContent = `Selected file: ${newFile.name}`;
+                    } else {
+                        selectedFiles[idx] = null;
+                        selectedFileSpan.textContent = '';
+                    }
+                    updateGenerateBtnState();
+                    updateAddButtonVisibility();
+                });
+
+                removeBtn.addEventListener('click', () => {
+                    const idx = Array.from(inputWrapper.parentNode.children).filter(el => el.classList.contains('drop-zone')).indexOf(inputWrapper);
+                    if (selectedFiles[idx]) {
+                        selectedFiles[idx] = null; // Mark as null instead of splice to maintain indices
+                    }
+                    inputWrapper.remove();
+                    updateGenerateBtnState();
+                    updateAddButtonVisibility();
+                });
                 
+                // Insert before the add file button, within the combinedInputSection
+                combinedInputSection.insertBefore(inputWrapper, addFileBtn);
+                updateAddButtonVisibility();
+            }
+
+            function addUrlInput(url = '') {
+                if (selectedFiles.filter(Boolean).length + selectedUrls.filter(Boolean).length >= MAX_INPUTS) return;
+
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = 'input-entry url-input-group';
+                inputWrapper.style.marginBottom = '1rem';
+                inputWrapper.innerHTML = `
+                    <input type="text" placeholder="Paste PDF URL here" value="${url}" style="width: calc(100% - 40px); padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;" />
+                    <button type="button" class="remove-input-btn" style="background: none; border: none; color: #dc3545; cursor: pointer; margin-left: 10px;"><i class="fas fa-times-circle"></i></button>
+                `;
+
+                const currentUrlInput = inputWrapper.querySelector('input[type="text"]');
+                const removeBtn = inputWrapper.querySelector('.remove-input-btn');
+
+                // Find the next available index for a new URL
+                let newIndex = 1; // Start from 1, as 0 is for initialPdfUrlInput
+                while (newIndex < MAX_INPUTS && selectedUrls[newIndex] !== undefined && selectedUrls[newIndex] !== null) {
+                    newIndex++;
+                }
+                if (newIndex >= MAX_INPUTS) return; // Prevent exceeding max inputs
+
+                if (url) {
+                    selectedUrls[newIndex] = url;
+                }
+
+                currentUrlInput.addEventListener('input', () => {
+                    const newUrl = currentUrlInput.value.trim();
+                    // Get the index from the position in the DOM
+                    const idx = Array.from(inputWrapper.parentNode.children).filter(el => el.classList.contains('url-input-group')).indexOf(inputWrapper);
+                    if (newUrl) {
+                        selectedUrls[idx] = newUrl;
+                    } else {
+                        selectedUrls[idx] = null;
+                    }
+                    updateGenerateBtnState();
+                    updateAddButtonVisibility();
+                });
+
+                removeBtn.addEventListener('click', () => {
+                    const idx = Array.from(inputWrapper.parentNode.children).filter(el => el.classList.contains('url-input-group')).indexOf(inputWrapper);
+                    if (selectedUrls[idx]) {
+                        selectedUrls[idx] = null; // Mark as null instead of splice to maintain indices
+                    }
+                    inputWrapper.remove();
+                    updateGenerateBtnState();
+                    updateAddButtonVisibility();
+                });
+
+                // Insert before the add url button, within the combinedInputSection
+                combinedInputSection.insertBefore(inputWrapper, addUrlBtn);
+                updateAddButtonVisibility();
+            }
+
+            // --- Initial State and Add Button Event Listeners ---
+            // Ensure add buttons are hidden on load
+            addFileBtn.style.display = 'none';
+            addUrlBtn.style.display = 'none';
+
+            addFileBtn.addEventListener('click', () => {
+                addFileInput();
+            });
+            addUrlBtn.addEventListener('click', () => {
+                addUrlInput();
+            });
+
+            // Template selection handling
+            templateOptions.forEach(option => {
+                option.addEventListener('change', updateGenerateBtnState);
+            });
+
+            // On page load, disable the button
+            updateGenerateBtnState();
+
+            // Generate button click handler
+            generateBtn.addEventListener('click', async () => {
+                const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
                 // Show loading state
                 generateBtn.classList.add('loading');
                 generateBtn.disabled = true;
                 generateBtn.innerHTML = '<span>Generating...</span>';
 
-                const formData = new FormData();
-                formData.append('pdf', selectedFile);
-                formData.append('template', selectedTemplate);
-
                 try {
-                    const response = await fetch('/generate-summary', {
-                        method: 'POST',
-                        body: formData
+                    const formData = new FormData();
+                    formData.append('template', selectedTemplate);
+
+                    // Consolidate all files including the initial one if present
+                    if (selectedFiles[0]) {
+                        formData.append(`pdf0`, selectedFiles[0]);
+                    }
+                    selectedFiles.filter(Boolean).slice(1).forEach((file, index) => { // Skip initial, start from index 1 for others
+                        formData.append(`pdf${index + 1}`, file);
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Failed to generate content');
+                    // Consolidate all URLs including the initial one if present
+                    if (selectedUrls[0]) {
+                        formData.append(`url0`, selectedUrls[0]);
+                    }
+                    selectedUrls.filter(url => url && url.trim() !== '').slice(1).forEach((url, index) => { // Skip initial, start from index 1 for others
+                        formData.append(`url${index + 1}`, url);
+                    });
+
+                    let response;
+                    if (selectedFiles.filter(Boolean).length > 0 || selectedUrls.filter(url => url && url.trim() !== '').length > 0) {
+                        response = await fetch('/generate-summary-multiple', { // Use new endpoint for multiple inputs
+                            method: 'POST',
+                            body: formData
+                        });
+                    } else {
+                        alert('Please upload at least one document or provide at least one URL.');
+                        return;
                     }
 
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     const data = await response.json();
+
                     displayResult(data.summary);
-                    
-                    // Scroll to results
-                    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Failed to generate content. Please try again.');
+                    alert('Failed to generate content: ' + error.message);
                 } finally {
                     // Reset button state
                     generateBtn.classList.remove('loading');
@@ -634,153 +1328,414 @@
                     generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Content';
                 }
             });
+        });
 
-            // Drag and drop handling
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('drop-zone--over');
-            });
+        // Settings functionality
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const saveSettingsBtn = document.getElementById('saveSettings');
 
-            ['dragleave', 'dragend'].forEach(type => {
-                dropZone.addEventListener(type, (e) => {
-                    dropZone.classList.remove('drop-zone--over');
-                });
-            });
+        // Event listeners for settings modal
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'block';
+            loadSavedSettings();
+        });
 
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('drop-zone--over');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    handleFileSelection(file);
-                }
-            });
+        closeBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
 
-            function displayResult(result) {
-                const resultContainer = document.getElementById('result');
-                resultContainer.style.display = 'block';
-                
-                try {
-                    // Parse the JSON string
-                    const jsonObj = typeof result === 'string' ? JSON.parse(result) : result;
-                    
-                    // Group fields by category
-                    const sections = {
-                        'Basic Information': ['Title', 'ShortTitle', 'Summary', 'Introduction', 'Description', 'KeyContentTakeaways'],
-                        'Media Assets': ['BannerImage', 'Image', 'SliderImage', 'ServiceImages', 'HelpBrandImage', 'HelpBrandIcon'],
-                        'Navigation & Links': ['BaseLink', 'AuthorLink', 'RelatedDocument', 'NavigationTitle', 'LinkCaptionInNavigation'],
-                        'SEO & Metadata': ['BrowserTitle', 'MetaKeywords', 'MetaDescription', 'Category', 'CategoryType'],
-                        'Content Details': ['BannerLabel', 'ButtonText', 'Topic', 'PostedBy', 'Posts', 'PostDescription', 'BlogMinutesReading'],
-                        'Settings & Dates': ['FormHide', 'IncludeInSearchResults', 'PressReleaseDate', 'DateBlog']
-                    };
-
-                    // Create formatted HTML content
-                    let formattedContent = '';
-                    
-                    // Create sections
-                    for (const [sectionName, fields] of Object.entries(sections)) {
-                        const sectionFields = fields.filter(field => jsonObj.hasOwnProperty(field));
-                        
-                        if (sectionFields.length > 0) {
-                            formattedContent += `
-                                <div class="content-section">
-                                    <div class="section-header">
-                                        <i class="fas ${getSectionIcon(sectionName)}"></i>
-                                        <h4>${sectionName}</h4>
-                                    </div>
-                                    <div class="field-group">
-                            `;
-
-                            sectionFields.forEach(field => {
-                                const value = jsonObj[field];
-                                const valueType = typeof value;
-                                let valueClass = 'json-string';
-                                
-                                if (valueType === 'number') {
-                                    valueClass = 'json-number';
-                                } else if (valueType === 'boolean') {
-                                    valueClass = 'json-boolean';
-                                }
-
-                                formattedContent += `
-                                    <div class="json-field">
-                                        <span class="json-key">${field}</span>
-                                        <div class="json-value ${valueClass} editable" data-field="${field}">
-                                            ${formatValue(value, field)}
-                                            <button class="edit-btn" onclick="makeEditable(this)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            });
-
-                            formattedContent += `
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    }
-                    
-                    resultContainer.innerHTML = `
-                        <h3><i class="fas fa-file-alt"></i>Generated Content</h3>
-                        <div class="result-content">${formattedContent}</div>
-                        <button class="save-pdf-btn" onclick="saveAsJSON()">
-                            <i class="fas fa-save"></i>
-                            Save as JSON
-                        </button>
-                    `;
-
-                    // Scroll to results smoothly
-                    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } catch (e) {
-                    console.error('Error formatting JSON:', e);
-                    resultContainer.innerHTML = `
-                        <h3>Generated Content</h3>
-                        <div class="result-content">${result}</div>
-                    `;
-                }
-            }
-
-            function getSectionIcon(sectionName) {
-                const icons = {
-                    'Basic Information': 'fa-info-circle',
-                    'Media Assets': 'fa-images',
-                    'Navigation & Links': 'fa-link',
-                    'SEO & Metadata': 'fa-tags',
-                    'Content Details': 'fa-file-alt',
-                    'Settings & Dates': 'fa-cog'
-                };
-                return icons[sectionName] || 'fa-file';
-            }
-
-            function formatValue(value, field) {
-                if (value === null || value === undefined) {
-                    return '<em>Not specified</em>';
-                }
-                if (typeof value === 'boolean') {
-                    return value ? 'Yes' : 'No';
-                }
-                if (field === 'KeyContentTakeaways' && Array.isArray(value)) {
-                    return `<ul class="takeaways-list">
-                        ${value.map(point => `<li>${point}</li>`).join('')}
-                    </ul>`;
-                }
-                if (Array.isArray(value)) {
-                    return value.join(', ') || '<em>No items</em>';
-                }
-                if (typeof value === 'string' && value.trim() === '') {
-                    return '<em>Empty</em>';
-                }
-                if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
-                    return `<a href="${value}" target="_blank" rel="noopener noreferrer">${value}</a>`;
-                }
-                if (field === 'Introduction' || field === 'Description') {
-                    return `<div class="content-text">${value}</div>`;
-                }
-                return value.toString();
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
             }
         });
+
+        // Load saved settings from localStorage
+        function loadSavedSettings() {
+            const savedSettings = JSON.parse(localStorage.getItem('contentSettings') || '{}');
+            
+            // Load radio button settings
+            ['tone', 'length', 'audience', 'purpose', 'focus', 'format', 'creativity', 'links'].forEach(setting => {
+                if (savedSettings[setting]) {
+                    const radio = document.querySelector(`input[name="${setting}"][value="${savedSettings[setting]}"]`);
+                    if (radio) radio.checked = true;
+                }
+            });
+
+            // Load checkbox settings
+            ['images', 'autofill', 'restrictions'].forEach(setting => {
+                if (savedSettings[setting]) {
+                    savedSettings[setting].forEach(value => {
+                        const checkbox = document.querySelector(`input[name="${setting}"][value="${value}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            });
+
+            // Load text inputs
+            ['keywords', 'useCase', 'avoidTopics'].forEach(setting => {
+                if (savedSettings[setting]) {
+                    const input = document.getElementById(setting);
+                    if (input) input.value = savedSettings[setting];
+                }
+            });
+
+            // Load select inputs
+            ['readingTime', 'language'].forEach(setting => {
+                if (savedSettings[setting]) {
+                    const select = document.getElementById(setting);
+                    if (select) select.value = savedSettings[setting];
+                }
+            });
+        }
+
+        // Save settings to localStorage
+        function validateSettings() {
+            const requiredSettings = ['tone', 'length', 'audience', 'purpose', 'focus', 'format'];
+            const missingSettings = [];
+
+            requiredSettings.forEach(setting => {
+                if (!document.querySelector(`input[name="${setting}"]:checked`)) {
+                    missingSettings.push(setting.charAt(0).toUpperCase() + setting.slice(1));
+                }
+            });
+
+            if (missingSettings.length > 0) {
+                alert(`Please select the following required settings:\n- ${missingSettings.join('\n- ')}`);
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveSettings() {
+            if (!validateSettings()) {
+                return;
+            }
+
+            const settings = {
+                tone: document.querySelector('input[name="tone"]:checked')?.value,
+                length: document.querySelector('input[name="length"]:checked')?.value,
+                audience: document.querySelector('input[name="audience"]:checked')?.value,
+                purpose: document.querySelector('input[name="purpose"]:checked')?.value,
+                focus: document.querySelector('input[name="focus"]:checked')?.value,
+                format: document.querySelector('input[name="format"]:checked')?.value,
+                creativity: document.querySelector('input[name="creativity"]:checked')?.value,
+                links: document.querySelector('input[name="links"]:checked')?.value,
+                
+                // Get checkbox values as arrays
+                images: Array.from(document.querySelectorAll('input[name="images"]:checked')).map(cb => cb.value),
+                autofill: Array.from(document.querySelectorAll('input[name="autofill"]:checked')).map(cb => cb.value),
+                restrictions: Array.from(document.querySelectorAll('input[name="restrictions"]:checked')).map(cb => cb.value),
+                
+                // Get text input values
+                keywords: document.getElementById('keywords')?.value || '',
+                useCase: document.getElementById('useCase')?.value || '',
+                avoidTopics: document.getElementById('avoidTopics')?.value || '',
+                
+                // Get select values
+                readingTime: document.getElementById('readingTime')?.value || '',
+                language: document.getElementById('language')?.value || ''
+            };
+
+            localStorage.setItem('contentSettings', JSON.stringify(settings));
+            settingsModal.style.display = 'none';
+            
+            // Trigger content regeneration if we're on the generator page
+            if (typeof generateContent === 'function') {
+                generateContent();
+            }
+        }
+
+        // Function to generate content
+        async function generateContent() {
+            const generateBtn = document.querySelector('.generate-btn');
+            const fileInput = document.getElementById('fileInput');
+            const selectedTemplate = document.querySelector('input[name="template"]:checked');
+            
+            // Check if settings are configured
+            const savedSettings = JSON.parse(localStorage.getItem('contentSettings') || '{}');
+            const requiredSettings = ['tone', 'length', 'audience', 'purpose', 'focus', 'format', 'creativity', 'links'];
+            const missingSettings = requiredSettings.filter(setting => !savedSettings[setting]);
+
+            if (missingSettings.length > 0) {
+                alert('Please configure your content settings first. Missing: ' + missingSettings.join(', '));
+                settingsModal.style.display = 'block';
+                return;
+            }
+
+            if (!fileInput.files[0] || !selectedTemplate) {
+                alert('Please select a file and template first.');
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateBtn.classList.add('loading');
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('template', selectedTemplate.value);
+                formData.append('settings', JSON.stringify(savedSettings));
+
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Generation failed');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'generated_content.docx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                generateBtn.innerHTML = '<i class="fas fa-check"></i> Generated!';
+                setTimeout(() => {
+                    generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Content';
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('loading');
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                generateBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Generation Failed';
+                setTimeout(() => {
+                    generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Content';
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('loading');
+                }, 2000);
+            }
+        }
+
+        // Add event listener for the generate button
+        document.querySelector('.generate-btn')?.addEventListener('click', generateContent);
+
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Clear any existing settings when the page loads
+            localStorage.removeItem('contentSettings');
+        });
+
+        // Dynamic content generation based on settings
+        function getSettings() {
+            return JSON.parse(localStorage.getItem('contentSettings') || '{}');
+        }
+
+        function hasValidSettings(settings) {
+            // Check if at least one of the main settings is selected
+            return settings && (
+                settings.format || settings.length || settings.tone || settings.audience || settings.purpose || settings.focus
+            );
+        }
+
+        function generateDynamicContent() {
+            const settings = getSettings();
+            const section = document.querySelector('.dynamic-content-section');
+            // Hide section if no settings
+            if (!hasValidSettings(settings)) {
+                section.style.display = 'none';
+                return;
+            }
+            // Do not show the section here; it will be shown after content is generated
+        }
+
+        // Call on page load
+        document.addEventListener('DOMContentLoaded', generateDynamicContent);
+        // Listen for storage changes (if settings updated in another tab)
+        window.addEventListener('storage', generateDynamicContent);
     </script>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2><i class="fas fa-cog"></i> Content Generation Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="settings-body">
+                <!-- Tone of Content -->
+                <div class="settings-section">
+                    <h3>✍️ Tone of Content</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="tone" value="professional"> Professional (B2B blogs)</label>
+                        <label><input type="radio" name="tone" value="conversational"> Conversational</label>
+                        <label><input type="radio" name="tone" value="formal"> Formal</label>
+                        <label><input type="radio" name="tone" value="informal"> Informal</label>
+                        <label><input type="radio" name="tone" value="enthusiastic"> Enthusiastic</label>
+                        <label><input type="radio" name="tone" value="persuasive"> Persuasive</label>
+                        <label><input type="radio" name="tone" value="informative"> Informative</label>
+                        <label><input type="radio" name="tone" value="technical"> Technical</label>
+                    </div>
+                </div>
+
+                <!-- Content Length -->
+                <div class="settings-section">
+                    <h3>📄 Content Length</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="length" value="short"> Short (Summary level)</label>
+                        <label><input type="radio" name="length" value="medium"> Medium (300-500 words)</label>
+                        <label><input type="radio" name="length" value="long"> Long-form (1000+ words)</label>
+                    </div>
+                </div>
+
+                <!-- Target Audience -->
+                <div class="settings-section">
+                    <h3>🧠 Target Audience</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="audience" value="beginners"> Beginners</label>
+                        <label><input type="radio" name="audience" value="intermediate"> Intermediate professionals</label>
+                        <label><input type="radio" name="audience" value="experts"> Industry Experts</label>
+                        <label><input type="radio" name="audience" value="executives"> Business Executives</label>
+                        <label><input type="radio" name="audience" value="students"> Students</label>
+                    </div>
+                </div>
+
+                <!-- Content Purpose -->
+                <div class="settings-section">
+                    <h3>🔍 Content Purpose</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="purpose" value="blog"> Blog Post</label>
+                        <label><input type="radio" name="purpose" value="product"> Product Description</label>
+                        <label><input type="radio" name="purpose" value="social"> Social Media Teaser</label>
+                        <label><input type="radio" name="purpose" value="case-study"> Case Study</label>
+                        <label><input type="radio" name="purpose" value="whitepaper"> Whitepaper Summary</label>
+                        <label><input type="radio" name="purpose" value="executive"> Executive Summary</label>
+                        <label><input type="radio" name="purpose" value="seo"> SEO Content</label>
+                        <label><input type="radio" name="purpose" value="marketing"> Marketing Copy</label>
+                    </div>
+                </div>
+
+                <!-- Keywords -->
+                <div class="settings-section">
+                    <h3>📢 Keywords to Include (SEO)</h3>
+                    <textarea id="keywords" placeholder="Enter keywords separated by commas"></textarea>
+                </div>
+
+                <!-- Content Focus -->
+                <div class="settings-section">
+                    <h3>🧩 Content Focus / Subdomain</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="focus" value="erp"> ERP</label>
+                        <label><input type="radio" name="focus" value="crm"> CRM</label>
+                        <label><input type="radio" name="focus" value="scm"> SCM</label>
+                        <label><input type="radio" name="focus" value="hcm"> HCM</label>
+                        <label><input type="radio" name="focus" value="insurance"> Insurance</label>
+                        <label><input type="radio" name="focus" value="education"> Higher Education</label>
+                        <label><input type="radio" name="focus" value="manufacturing"> Manufacturing</label>
+                        <label><input type="radio" name="focus" value="logistics"> Logistics</label>
+                        <label><input type="radio" name="focus" value="enterprise"> General Enterprise Solutions</label>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="settings-section">
+                    <h3>📚 Use Case / Scenario</h3>
+                    <textarea id="useCase" placeholder="Describe your use case or scenario"></textarea>
+                </div>
+
+                <!-- Image Options -->
+                <div class="settings-section">
+                    <h3>🖼️ Image Options</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="images" value="urls"> Include Image URLs</label>
+                        <label><input type="checkbox" name="images" value="ideas"> Suggest image ideas</label>
+                        <label><input type="checkbox" name="images" value="alt"> Add alt text to images</label>
+                    </div>
+                </div>
+
+                <!-- Content Format -->
+                <div class="settings-section">
+                    <h3>🔗 Content Format</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="format" value="paragraph"> Paragraph</label>
+                        <label><input type="radio" name="format" value="bullet"> Bullet Points</label>
+                        <label><input type="radio" name="format" value="numbered"> Numbered Lists</label>
+                        <label><input type="radio" name="format" value="mixed"> Mixed</label>
+                    </div>
+                </div>
+
+                <!-- Reading Time -->
+                <div class="settings-section">
+                    <h3>🕰️ Blog Reading Time Target</h3>
+                    <select id="readingTime">
+                        <option value="">Select reading time</option>
+                        <option value="2">2 minutes</option>
+                        <option value="5">5 minutes</option>
+                        <option value="10">10 minutes</option>
+                        <option value="15">15 minutes</option>
+                    </select>
+                </div>
+
+                <!-- Auto-Fill Options -->
+                <div class="settings-section">
+                    <h3>💡 Optional Fields to Auto-Fill</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="autofill" value="meta-desc"> Meta Description</label>
+                        <label><input type="checkbox" name="autofill" value="meta-keywords"> Meta Keywords</label>
+                        <label><input type="checkbox" name="autofill" value="nav-title"> Navigation Title</label>
+                        <label><input type="checkbox" name="autofill" value="summary"> Summary for teasers</label>
+                        <label><input type="checkbox" name="autofill" value="reading-time"> Blog Minutes Reading</label>
+                    </div>
+                </div>
+
+                <!-- AI Creativity Level -->
+                <div class="settings-section">
+                    <h3>🧠 AI Creativity Level</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="creativity" value="low"> Low (Factual/Precise)</label>
+                        <label><input type="radio" name="creativity" value="medium"> Medium (Balanced)</label>
+                        <label><input type="radio" name="creativity" value="high"> High (Creative/Explorative)</label>
+                    </div>
+                </div>
+
+                <!-- Language/Region -->
+                <div class="settings-section">
+                    <h3>🌐 Language/Region Preferences</h3>
+                    <select id="language">
+                        <option value="">Select language/region</option>
+                        <option value="en-us">English (US)</option>
+                        <option value="en-uk">English (UK)</option>
+                        <option value="en-in">English (India)</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+
+                <!-- Content Restrictions -->
+                <div class="settings-section">
+                    <h3>🛑 Content Restrictions</h3>
+                    <div class="settings-options checkbox-options">
+                        <label><input type="checkbox" name="restrictions" value="no-jargon"> Do not include technical jargon</label>
+                        <label><input type="checkbox" name="restrictions" value="no-competitors"> Do not mention competitors</label>
+                    </div>
+                    <textarea id="avoidTopics" placeholder="Enter topics/phrases to avoid (separated by commas)"></textarea>
+                </div>
+
+                <!-- Link Preferences -->
+                <div class="settings-section">
+                    <h3>🔗 Link Preferences</h3>
+                    <div class="settings-options">
+                        <label><input type="radio" name="links" value="internal"> Include internal links</label>
+                        <label><input type="radio" name="links" value="external"> Include external links</label>
+                        <label><input type="radio" name="links" value="both"> Both internal and external</label>
+                        <label><input type="radio" name="links" value="none"> No links</label>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button id="saveSettings" class="save-settings-btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

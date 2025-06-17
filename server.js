@@ -7,6 +7,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 const app = express();
 const PORT = 3000;
@@ -26,18 +28,15 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-// Configure multer for PDF upload
-const upload = multer({ 
+// Configure multer for file uploads
+const upload = multer({
     dest: uploadsDir,
     fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only PDF files are allowed!'), false);
-        }
+        // Allow all file types for now, filtering will happen based on extension/mimetype later
+        cb(null, true);
     },
     limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit
+        fileSize: 20 * 1024 * 1024 // 20MB limit per file
     }
 });
 
@@ -45,33 +44,221 @@ const upload = multer({
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-// Function to read PDF content
+// Function to parse PDF buffer
+async function parsePdfBuffer(buffer) {
+    const options = {
+        pagerender: function(pageData) {
+            return pageData.getTextContent()
+                .then(function(textContent) {
+                    let lastY, text = '';
+                    for (let item of textContent.items) {
+                        if (lastY == item.transform[5] || !lastY) {
+                            text += item.str;
+                        } else {
+                            text += '\n' + item.str;
+                        }
+                        lastY = item.transform[5];
+                    }
+                    return text;
+                });
+        }
+    };
+
+    const data = await pdfParse(buffer, options);
+    return data.text;
+}
+
+// Function to read PDF content from file path
 async function readPDFContent(filePath) {
     try {
         const dataBuffer = fs.readFileSync(filePath);
-        const options = {
-            pagerender: function(pageData) {
-                return pageData.getTextContent()
-                    .then(function(textContent) {
-                        let lastY, text = '';
-                        for (let item of textContent.items) {
-                            if (lastY == item.transform[5] || !lastY) {
-                                text += item.str;
-                            } else {
-                                text += '\n' + item.str;
-                            }
-                            lastY = item.transform[5];
-                        }
-                        return text;
-                    });
-            }
-        };
-        
-        const data = await pdfParse(dataBuffer, options);
-        return data.text;
+        return await parsePdfBuffer(dataBuffer);
     } catch (error) {
-        console.error('Error reading PDF:', error);
+        console.error('Error reading PDF from file:', error);
         throw new Error('Failed to read PDF file. Please ensure it is a valid PDF.');
+    }
+}
+
+// Function to extract text from PDF buffer (for URLs)
+async function extractTextFromPDF(buffer) {
+    try {
+        return await parsePdfBuffer(buffer);
+    } catch (error) {
+        console.error('Error extracting text from PDF buffer:', error);
+        throw new Error('Failed to extract text from PDF from URL.');
+    }
+}
+
+// Function to extract content from URL
+async function extractContentFromUrl(url) {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' }); // Use axios for better buffer handling
+        const contentType = response.headers['content-type'];
+        let content = '';
+
+        if (contentType && contentType.includes('application/pdf')) {
+            // Handle PDF content
+            content = await extractTextFromPDF(response.data);
+        } else if (contentType && contentType.includes('text/html')) {
+            // Handle HTML content
+            content = await extractTextFromHTML(response.data.toString('utf8'));
+        } else {
+            console.warn(`Unsupported content type for URL ${url}: ${contentType}`);
+            return ''; // Or throw an error
+        }
+
+        // Clean and structure the content
+        content = cleanAndStructureContent(content);
+
+        return content;
+    } catch (error) {
+        console.error('Error extracting content from URL:', error);
+        throw new Error(`Failed to extract content from URL ${url}: ${error.message}`);
+    }
+}
+
+async function extractTextFromHTML(html) {
+    try {
+        const $ = cheerio.load(html);
+
+        // Remove unwanted elements
+        $('script, style, nav, footer, header, iframe, noscript, .sidebar, .ad, .advertisement').remove();
+
+        // Extract main content from common containers
+        let content = '';
+        const mainContentSelectors = 'main, article, .content, #content, .main-content, #main-content, .post-content, .entry-content';
+        const mainContent = $(mainContentSelectors);
+
+        if (mainContent.length > 0) {
+            content = mainContent.text();
+        } else {
+            // Fallback to body content, but with more aggressive cleaning for common noise
+            content = $('body').text();
+        }
+
+        // Clean up the content
+        content = content
+            .replace(/\s+/g, ' ') // Replace multiple whitespace with a single space
+            .replace(/\n+/g, '\n') // Normalize multiple newlines
+            .replace(/([.,!?])\s+/g, '$1 ') // Ensure space after punctuation
+            .replace(/\s+([.,!?])/g, '$1') // Remove space before punctuation
+            .replace(/\n\s*\n/g, '\n\n') // Normalize paragraph breaks
+            .trim();
+
+        return content;
+    } catch (error) {
+        console.error('Error extracting text from HTML:', error);
+        throw new Error('Failed to extract text from HTML content');
+    }
+}
+
+function cleanAndStructureContent(content) {
+    // Remove extra whitespace and normalize line breaks
+    content = content
+        .replace(/\s+/g, ' ')
+        .replace(/\n\s*\n/g, '\n\n')
+        .trim();
+    
+    // Split into paragraphs
+    const paragraphs = content.split(/\n\n+/);
+    
+    // Filter out very short paragraphs and clean each paragraph
+    const cleanedParagraphs = paragraphs
+        .map(p => p.trim())
+        .filter(p => p.length > 50) // Increased minimum length to filter out more noise
+        .map(p => {
+            // Clean up punctuation and spacing
+            return p
+                .replace(/\s+([.,!?])/g, '$1')
+                .replace(/([.,!?])\s+/g, '$1 ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        });
+    
+    // Join paragraphs with proper spacing
+    return cleanedParagraphs.join('\n\n');
+}
+
+// Helper function to process AI response: strip markdown and safely parse JSON
+function processAIResponse(text) {
+    let jsonString = text;
+
+    // Attempt to find and extract JSON string by looking for the first '{' or '[' and last '}' or ']'
+    const firstBrace = text.indexOf('{');
+    const firstBracket = text.indexOf('[');
+    const lastBrace = text.lastIndexOf('}');
+    const lastBracket = text.lastIndexOf(']');
+
+    let startIndex = -1;
+    let endIndex = -1;
+
+    // Determine the start index: min of first brace or bracket if found
+    if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+        startIndex = firstBrace;
+    } else if (firstBracket !== -1) {
+        startIndex = firstBracket;
+    }
+
+    // Determine the end index: max of last brace or bracket if found
+    if (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) {
+        endIndex = lastBrace;
+    } else if (lastBracket !== -1) {
+        endIndex = lastBracket;
+    }
+
+    if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+        jsonString = text.substring(startIndex, endIndex + 1);
+    }
+
+    // Try to parse the extracted string as JSON
+    try {
+        const parsed = JSON.parse(jsonString);
+        return JSON.stringify(parsed, null, 2); // Pretty-print for consistency
+    } catch (jsonError) {
+        console.error('Failed to parse JSON. Attempted to parse:', jsonString, 'Raw text:', text, 'Error:', jsonError);
+        // As a last resort, return the original text. The frontend should display it as raw text.
+        return String(text);
+    }
+}
+
+// Function to get company context from context.html
+async function getCompanyContext() {
+    try {
+        const contextHtmlPath = path.join(__dirname, 'context.html');
+        const html = fs.readFileSync(contextHtmlPath, 'utf8');
+        const $ = cheerio.load(html);
+
+        let companyContext = '';
+
+        // Extract text from relevant sections. Prioritize content within specific elements.
+        $('h1, h2, h3, p, li').each((i, el) => {
+            let text = $(el).text().trim();
+            if (text) {
+                // Add a newline for block elements to maintain readability
+                if (el.tagName === 'p' || el.tagName === 'li' || el.tagName.startsWith('h')) {
+                    companyContext += text + '\n';
+                } else {
+                    companyContext += text + ' ';
+                }
+            }
+        });
+
+        // Further clean up the extracted text
+        companyContext = companyContext
+            .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
+            .replace(/\n\s*\n/g, '\n\n') // Normalize multiple newlines
+            .trim();
+
+        // Limit context length if it's too large
+        const MAX_CONTEXT_LENGTH = 5000; // Limit to 5000 characters
+        if (companyContext.length > MAX_CONTEXT_LENGTH) {
+            companyContext = companyContext.substring(0, MAX_CONTEXT_LENGTH) + '...';
+        }
+
+        return companyContext;
+    } catch (error) {
+        console.error('Error reading company context from context.html:', error);
+        return ''; // Return empty string if context cannot be read
     }
 }
 
@@ -90,89 +277,77 @@ app.get("/context", (req, res) => {
     res.sendFile(path.join(__dirname, "context.html"));
 });
 
-// Route to handle PDF upload and summary generation
-app.post("/generate-summary", upload.single("pdf"), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: "No PDF uploaded" });
-    }
-
+// New route to handle multiple PDF/URL inputs and summary generation
+app.post('/generate-summary-multiple', upload.any(), async (req, res) => {
     try {
-        const pdfPath = req.file.path;
-        const pdfContent = await readPDFContent(pdfPath);
-        
-        if (!pdfContent || pdfContent.trim().length === 0) {
-            throw new Error('The PDF appears to be empty or could not be read properly.');
+        // Load prompts from prompts.json
+        const promptsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'prompts.json'), 'utf8'));
+        const prompts = {};
+        for (const [tplId, template] of Object.entries(promptsData.templates)) {
+            prompts[tplId] = `Analyze the following combined document content and generate content for a ${template.name} template. Format the response as a clean, well-structured JSON object.\n\n${template.instructions.join('\n')}\n\nFields to generate:\n${JSON.stringify(template.fields, null, 4)}\n\nYou must combine and synthesize information from ALL the provided documents and URLs. Do not focus on just one source. Generate a comprehensive response that integrates all topics and includes keywords from all sources.`;
         }
-        
-        // Truncate content if it's too long (Gemini has a context limit)
-        const truncatedContent = pdfContent.slice(0, 30000);
-        
-        // Get template from request
-        const templateId = req.body.template || "1";
-        
-        // Load prompts from external file
-        let prompts = {};
-        try {
-            const promptsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'prompts.json'), 'utf8'));
 
-            // Generate prompts dynamically from the configuration
-            for (const [templateId, template] of Object.entries(promptsData.templates)) {
-                prompts[templateId] = `Analyze the following document and generate content for a ${template.name} template. Format the response as a clean, well-structured JSON object.
+        const templateId = req.body.template;
+        const prompt = prompts[templateId];
+        let allContent = '';
 
-${template.instructions.join('\n')}
-
-Fields to generate:
-${JSON.stringify(template.fields, null, 4)}
-
-Analyze the provided document and generate appropriate content for each field.`;
+        // Process all PDF files
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                const pdfPath = file.path;
+                const pdfContent = await readPDFContent(pdfPath);
+                allContent += `\n\nDocument Content:\n${pdfContent}`;
+                // Clean up the temporary file
+                fs.unlinkSync(pdfPath);
             }
-        } catch (error) {
-            console.error('Error loading prompts:', error);
-            return res.status(500).json({ error: 'Failed to load prompt templates' });
         }
 
-        const prompt = prompts[templateId] + "\n\nDocument content to analyze:\n" + truncatedContent;
-        
-        const result = await model.generateContent(prompt);
-        const summary = result.response.text();
-
-        // Process the response to ensure proper JSON formatting
-        const formattedSummary = summary
-            .replace(/^```json\n|```$/g, '') // Remove any JSON code blocks
-            .trim();
-
-        try {
-            // Validate and format the JSON
-            const jsonObj = JSON.parse(formattedSummary);
-            
-            // Post-process the PostedBy field
-            if (!jsonObj.PostedBy || jsonObj.PostedBy === "John Doe" || jsonObj.PostedBy.includes("(")) {
-                jsonObj.PostedBy = "Espire Infolabs Team";
+        // Process all URLs
+        const urlKeys = Object.keys(req.body).filter(key => key.startsWith('url'));
+        for (const urlKey of urlKeys) {
+            const url = req.body[urlKey];
+            if (url) {
+                try {
+                    const urlContent = await extractContentFromUrl(url);
+                    allContent += `\n\nURL Content (${url}):\n${urlContent}`;
+                } catch (error) {
+                    console.error(`Error fetching URL ${url}:`, error);
+                }
             }
-            
-            const prettyJson = JSON.stringify(jsonObj, null, 2);
-            
-            // Delete the uploaded PDF after processing
-            fs.unlinkSync(pdfPath);
-
-            res.json({ summary: prettyJson });
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            res.status(500).json({ error: 'Failed to format the generated content' });
         }
+
+        // Get company context
+        const companyContext = await getCompanyContext();
+
+        // Combine all content with the prompt and company context
+        const fullPrompt = `${prompt}\n\nCompany Context:\n${companyContext}\n\nInput Content (combined from ALL provided documents and URLs):\n${allContent}\n\nYou must combine and synthesize information from ALL the provided documents and URLs. Do not focus on just one source. Generate a comprehensive response that integrates all topics and includes keywords from all sources.`;
+
+        const result = await model.generateContent(fullPrompt);
+        const response = await result.response;
+        let text = response.text();
+
+        // Log the raw AI response for debugging purposes
+        console.log('Raw AI Response:', text);
+
+        const processedJson = processAIResponse(text);
+        
+        res.json({ summary: processedJson });
+
     } catch (error) {
-        console.error("Error:", error);
-        // Clean up the uploaded file if it exists
-        if (req.file && req.file.path) {
-            try {
-                fs.unlinkSync(req.file.path);
-            } catch (unlinkError) {
-                console.error('Error deleting file:', unlinkError);
-            }
-        }
-        res.status(500).json({ error: error.message || "Failed to generate summary" });
+        console.error('Error:', error);
+        res.status(500).json({ error: error.message });
     }
 });
+
+// Helper function to validate URL format
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
